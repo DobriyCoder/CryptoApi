@@ -10,10 +10,10 @@
             <label>coin_pair_id: </label>
             <select name="coin_pair_id" id="coin_pair_id" >
                 <option value="" selected disabled hidden></option>
-                @foreach (var pair in BlocksHelper.GetPairList(100))
+                @*@foreach (var pair in BlocksHelper.GetPairList(100))
                 {
                     <option value="@pair.data.id">@pair.data.id (@pair.coin1.name & @pair.coin2.name)</option>
-                }
+                }*@
             </select>
         </p>
         <p>

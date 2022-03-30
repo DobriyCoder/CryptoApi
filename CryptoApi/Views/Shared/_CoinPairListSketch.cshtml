@@ -52,10 +52,12 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--lastPrice">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @(Model.coin1.change_price == "0" ? "-": Model.coin1.change_price)
+                    @*@(Model.coin1.change_price == "0" ? "-": Model.coin1.change_price)*@
                     <span>@Model.coin1.name</span>
                 </div>
-                @if(Model.coin2.change_price == "0"){
+                @*@if(Model.coin2.change_price == "0")*@
+                @if(true)
+                {
                     <div class="dual-value-display__text dual-value-display__text--secondary">
                         -
                     </div>
@@ -63,7 +65,7 @@
                 else
                 {
                     <div class="dual-value-display__text dual-value-display__text--secondary">
-                        @Model.coin2.change_price
+                        @*@Model.coin2.change_price*@
                         <span>@Model.coin2.name</span>
                     </div>
                 }
@@ -73,7 +75,7 @@
     <td class="data-table__body-item-cell">
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--changePerc">
             <div class="trend-badge"><i class="svg-icon caret-icon"></i>
-                @(Model.data.day_percent == "0" ? "-": Model.data.day_percent)
+                @*@(Model.data.day_percent == "0" ? "-": Model.data.day_percent)*@
             </div>
         </div>
     </td>
@@ -81,11 +83,11 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--high24h">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @(Model.data.day_hight_1 == "0" ? "-": Model.data.day_hight_1)
+                    @*@(Model.data.day_hight_1 == "0" ? "-": Model.data.day_hight_1)*@
                     <span></span>
                 </div>
                 <div class="dual-value-display__text dual-value-display__text--secondary">
-                    @(Model.data.day_hight_2 == "0" ? "-": Model.data.day_hight_2)
+                    @*@(Model.data.day_hight_2 == "0" ? "-": Model.data.day_hight_2)*@
                 </div>
             </div>
         </div>
@@ -94,11 +96,11 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--low24h">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @(Model.data.day_low_1 == "0" ? "-": Model.data.day_low_1)
+                    @*@(Model.data.day_low_1 == "0" ? "-": Model.data.day_low_1)*@
                     <span></span>
                 </div>
                 <div class="dual-value-display__text dual-value-display__text--secondary">
-                    @(Model.data.day_low_2 == "0" ? "-": Model.data.day_low_2)
+                    @*@(Model.data.day_low_2 == "0" ? "-": Model.data.day_low_2)*@
                 </div>
             </div>
         </div>
@@ -107,7 +109,7 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--cap">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @(Model.coin1.market_cap == "0" ? "-": Model.coin1.market_cap)
+                    @*@(Model.coin1.market_cap == "0" ? "-": Model.coin1.market_cap)*@
                     <span></span>
                 </div>
             </div>

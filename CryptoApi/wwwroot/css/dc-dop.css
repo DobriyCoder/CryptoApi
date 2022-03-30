@@ -16827,3 +16827,7 @@ iframe#_hjRemoteVarsFrame {
     line-height: normal !important
 }
 
+.pagination__list-item, .pagination__list-item:hover {
+    min-width: var(--pagination-width) !important;
+    width: auto !important;
+}

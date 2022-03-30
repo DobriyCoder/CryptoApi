@@ -36,7 +36,7 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public CCoinDataM? HasCoin(string donor, string name)
     {
-        return db.Coins.SingleOrDefault(coin => coin.donor == donor && coin.name == name);
+        return db.Coins.Where(c => c.name == name).FirstOrDefault();
     }
 
     /// <summary>
@@ -79,19 +79,28 @@ public class CCoinsM : CBaseDbM
     public CCoinDataM ApiToData (IApiCoin coin, CCoinDataM? data = null)
     {
         var new_coin = data ?? new CCoinDataM();
+        var now = DateTime.Now;
 
         new_coin.donor = coin.Donor;
         new_coin.donor_id = coin.Id;
         new_coin.name_full = coin.FullName;
         new_coin.name = coin.Name;
         new_coin.slug = coin.Name;
-        new_coin.usd = coin.Usd;
         new_coin.image = coin.Image;
-        new_coin.market_cap = coin.MarketCap.ToString();
-        new_coin.change_day = coin.ChangeDay.ToString();
-        new_coin.change_week = coin.ChangeWeek.ToString();
-        new_coin.change_month = coin.ChangeMonth.ToString();
-        new_coin.change_price = coin.ChangePrice.ToString();
+        new_coin.last_updated = now;
+
+        if (coin.UsdPrice == null) return new_coin;
+
+        var ext = new CCoinsExtDataM()
+        {
+            usd_price = coin.UsdPrice,
+            market_cap = coin.MarketCap,
+            low = coin.Low,
+            high = coin.High,
+            last_updated = now,
+        };
+
+        new_coin.ext.Add(ext);
 
         return new_coin;
     }
@@ -124,13 +133,18 @@ public class CCoinsM : CBaseDbM
         return db.Coins.Count<CCoinDataM>();
     }
 
+    public int TrueCount()
+    {
+        return GetTrueCoins().Count();
+    }
+
     /// <summary>
     ///     Достает монеты из БД используя исходное заданное количество и номер страницы.
     /// </summary>
     public IEnumerable<CCoinDataVM> GetCoins (int page, int count)
     {
         return db.Coins
-            //.Include(c => c.meta)
+            .Include(c => c.ext)
             .Select(c => new CCoinDataVM()
             {
                 data = c
@@ -139,13 +153,20 @@ public class CCoinsM : CBaseDbM
             .Take(count);
     }
 
+    public IEnumerable<CCoinDataM> GetTrueCoins()
+    {
+        return db.Coins
+            .Include(c => c.ext);
+            //.Where(c => c.ext.Count() > 0);
+    }
+
     /// <summary>
     ///     Достает похожие монеты из БД используя id исходной пары.
     /// </summary>
     public IEnumerable<CCoinDataVM> GetCoins(CCoinDataM coin)
     {
         return from item in coin["coins"]
-               where item.coinid == coin.id
+               where item.coins_id == coin.id
                select new CCoinDataVM() { data = db.Coins.Find(uint.Parse(item.value)) };
     }
 
@@ -157,6 +178,7 @@ public class CCoinsM : CBaseDbM
         return db.Coins
             .Where(c => c.name == name)
             .Include(c => c.meta)
+            .Include(c => c.ext)
             .Select(c => new CCoinDataVM()
             {
                 data = c
@@ -171,5 +193,10 @@ public class CCoinsM : CBaseDbM
     {
         int max_count = (int)Math.Ceiling(Count() / count * 1f);
         return max_count;
+    }
+
+    public void Clear ()
+    {
+        db.Coins.RemoveRange(db.Coins);
     }
 }
