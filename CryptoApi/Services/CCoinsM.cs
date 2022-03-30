@@ -165,6 +165,7 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public IEnumerable<CCoinDataVM> GetCoins(CCoinDataM coin)
     {
+        return GetCoins(1, 10);
         return from item in coin["coins"]
                where item.coins_id == coin.id
                select new CCoinDataVM() { data = db.Coins.Find(uint.Parse(item.value)) };
