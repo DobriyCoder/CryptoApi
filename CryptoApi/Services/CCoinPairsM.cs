@@ -86,13 +86,13 @@ public class CCoinPairsM : CBaseDbM
     {
         return null;
         /*return from item in pair["pairs"]
-               where item.coinpairsid == pair.id
-               let pair_m = db.CoinPairs.Find(uint.Parse(item.value))
+               where item.coin_1_id == pair.coin1_id || item.coin_2_id == pair.coin2_id || item.coin_1_id == pair.coin2_id || item.coin_2_id == pair.coin1_id
+               let pair_m = db.CoinPairs.First(m => m.id);
                select new CCoinPairDataVM()
                {
                    data = pair_m,
-                   coin1 = db.Coins.Find(pair_m.coin1_id),
-                   coin2 = db.Coins.Find(pair_m.coin2_id)
+                   coin1 = db.Coins.Find(item.coin_1_id),
+                   coin2 = db.Coins.Find(item.coin_2_id)
                };*/
     }
 

@@ -5,7 +5,7 @@
         <div class="coin-pairs-real-time-price-chart__chart">
             <div class='tradingview-widget-container'>
                 <div id='2'></div>
-                <div class='tradingview-widget-copyright'><a href='https://www.tradingview.com/symbols/ETCUSD/' rel='noopener' target='_blank'><span class='blue-text'>ETCUSD Rates</span></a> by TradingView</div>
+                <div class='tradingview-widget-copyright'><a href='https://www.tradingview.com/symbols/@(Model.data.name)USD/' rel='noopener' target='_blank'><span class='blue-text'>@(Model.data.name.ToUpper())-USD Rates</span></a> by TradingView</div>
                 <script src='https://s3.tradingview.com/tv.js'></script>
                 <script>
                     new TradingView.MediumWidget(
