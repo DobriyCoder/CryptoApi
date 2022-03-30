@@ -52,11 +52,10 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--lastPrice">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @*@(Model.coin1.change_price == "0" ? "-": Model.coin1.change_price)*@
+                    @(Model.coin1.ext.Last().usd_price == 0 ? "-": Model.coin1.ext.Last().usd_price)
                     <span>@Model.coin1.name</span>
                 </div>
-                @*@if(Model.coin2.change_price == "0")*@
-                @if(true)
+                @if(Model.coin2.ext.Last().usd_price == 0)
                 {
                     <div class="dual-value-display__text dual-value-display__text--secondary">
                         -
@@ -65,7 +64,7 @@
                 else
                 {
                     <div class="dual-value-display__text dual-value-display__text--secondary">
-                        @*@Model.coin2.change_price*@
+                        @Model.coin2.ext.Last().usd_price
                         <span>@Model.coin2.name</span>
                     </div>
                 }
@@ -74,8 +73,13 @@
     </td>
     <td class="data-table__body-item-cell">
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--changePerc">
-            <div class="trend-badge"><i class="svg-icon caret-icon"></i>
-                @*@(Model.data.day_percent == "0" ? "-": Model.data.day_percent)*@
+            <div class="dual-value-display">
+                <div class="dual-value-display__text">
+                    @(Model.coin1.ext.Last().change_day == 0 ? "-": Model.coin1.ext.Last().change_day)
+                </div>
+                <div class="dual-value-display__text dual-value-display__text--secondary">
+                    @(Model.coin2.ext.Last().change_day == 0 ? "-": Model.coin2.ext.Last().change_day + 5.13m)
+                </div>
             </div>
         </div>
     </td>
@@ -83,11 +87,11 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--high24h">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @*@(Model.data.day_hight_1 == "0" ? "-": Model.data.day_hight_1)*@
+                    @(Model.coin1.ext.Last().high == 0 ? "-": Model.coin1.ext.Last().high)
                     <span></span>
                 </div>
                 <div class="dual-value-display__text dual-value-display__text--secondary">
-                    @*@(Model.data.day_hight_2 == "0" ? "-": Model.data.day_hight_2)*@
+                    @(Model.coin2.ext.Last().high == 0 ? "-": Model.coin2.ext.Last().high)
                 </div>
             </div>
         </div>
@@ -96,11 +100,11 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--low24h">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @*@(Model.data.day_low_1 == "0" ? "-": Model.data.day_low_1)*@
+                    @(Model.coin1.ext.Last().low == 0 ? "-": Model.coin1.ext.Last().low)
                     <span></span>
                 </div>
                 <div class="dual-value-display__text dual-value-display__text--secondary">
-                    @*@(Model.data.day_low_2 == "0" ? "-": Model.data.day_low_2)*@
+                    @(Model.coin2.ext.Last().low == 0 ? "-": Model.coin2.ext.Last().low)
                 </div>
             </div>
         </div>
@@ -109,8 +113,11 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--cap">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @*@(Model.coin1.market_cap == "0" ? "-": Model.coin1.market_cap)*@
+                    @(Model.coin1.ext.Last().market_cap == 0 ? "-": Model.coin1.ext.Last().market_cap)
                     <span></span>
+                </div>
+                <div class="dual-value-display__text">
+                    @(Model.coin2.ext.Last().market_cap == 0 ? "-": Model.coin2.ext.Last().market_cap)
                 </div>
             </div>
         </div>
