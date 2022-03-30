@@ -2,7 +2,7 @@
 @inject CBlocksHelperVM BlocksHelper
 @{
     ViewData["Title"] = "CoinPair Page";
-    //var similiar_pairs = BlocksHelper.GetPairList(Model.pair.data);
+    var similiar_pairs = BlocksHelper.GetPairList(Model.pair.data);
     Console.Write("");
 }
 <!DOCTYPE html>
@@ -151,7 +151,7 @@
                                     </div>
                                     @*@await Html.PartialAsync("_CoinInfo")*@ @*CoinInfo*@
                                     @await Html.PartialAsync("_Description", Model.Description) @*CoinPairText*@
-                                    @*@if (similiar_pairs.Count() > 0)
+                                    @if (similiar_pairs.Count() > 0)
                                     {
                                         <div class="dc-list-title-wrapper">
                                             <h2 class="dc-coin-pairs-table__title">Similiar Pairs</h2>
@@ -160,7 +160,7 @@
                                             </div>
                                         </div>
                                         @await Html.PartialAsync("_CoinPairList", similiar_pairs) @*CoinPairsList*@
-                                    @*}**@
+                                    }
                                 
                                     @await Html.PartialAsync("_TextBlocks", Model.TextBlocks) @*HowTo*@
                                     @await Html.PartialAsync("_Faq", Model.Faq) @*Faq*@

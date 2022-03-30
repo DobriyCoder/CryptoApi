@@ -34,27 +34,27 @@
             <tr>
                 <td>
                     <div class="dc-coin-info-table-value">
-                        @*@Model.data.change_week%*@
+                        @Model.data.ext.Last().change_week%
                     </div>
                 </td>
                 <td>
                     <div class="dc-coin-info-table-value">
-                        @*@Model.data.change_month%*@
+                        @Model.data.ext.Last().change_month%
                     </div>
                 </td>
                 <td>
                     <div class="dc-coin-info-table-value">
-                        @*@Model.data.change_day%*@
+                        @Model.data.ext.Last().change_day%
                     </div>
                 </td>
                 <td>
                     <div class="dc-coin-info-table-value">
-                        @*$@Model.data.market_cap*@
+                        @Model.data.ext.Last().market_cap
                     </div>
                 </td>
                 <td>
                     <div class="dc-coin-info-table-value">
-                        @*@Model.data.change_price*@
+                        @Model.data.ext.Last().change_24h
                     </div>
                 </td>
             </tr>
