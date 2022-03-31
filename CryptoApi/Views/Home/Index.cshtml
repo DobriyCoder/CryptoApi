@@ -80,12 +80,5 @@
 </section>
 
 @section PageHead {
-    <div class="row">
-        <div class="col-6">
-            @await Html.PartialAsync("_PageHeadMain")
-        </div>
-        <div class="col-6">
-            @await Html.PartialAsync("_ExchangeWidget", ("btc", "eth"))
-        </div>
-    </div>
+    @await Html.PartialAsync("_SubheaderMain")
 }

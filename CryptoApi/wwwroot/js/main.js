@@ -394,6 +394,13 @@ jQuery('.dc-soc-icons').dcTpl(function ($, Export) {
 // /soc-icons
 //--------------------------------------------
 
+// subheader-main
+jQuery('.dc-subheader-main').dcTpl(function ($, Export) {
+   var $self = $(this);
+});
+// /subheader-main
+//--------------------------------------------
+
 // table
 jQuery('.dc-table').dcTpl(function ($, Export) {
    var $self = $(this);
