@@ -1,7 +1,10 @@
-﻿@model IEnumerable<CTextBlockVM>
-
+﻿@*@model IEnumerable<CTextBlockVM>*@
+@{
+    //здесь тестовые данные для модели
+}
 <div class="dc-faq">
-    @{
+    faq
+    @*@{
         string question1 = "What is XMR and BTC exchange pair?";
         string question2 = "How to convert Monero to Bitcoin?";
         string question3 = "What is the limit for XMR to BTC exchange?";
@@ -15,5 +18,5 @@
     >faq
     @await Html.PartialAsync("_TextBlock")
     @await Html.PartialAsync("_TextBlock")
-    @await Html.PartialAsync("_TextBlock")
+    @await Html.PartialAsync("_TextBlock")*@
 </div>

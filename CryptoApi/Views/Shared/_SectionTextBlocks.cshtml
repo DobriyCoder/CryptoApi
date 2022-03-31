@@ -3,6 +3,6 @@
 <div class="dc-section-text-blocks">
     @foreach (var item in Model)
     {
-        @await Html.PartialAsync("_SectionTextBlock", item)
+        @await Html.PartialAsync("_SectionTextBlock", (item.title, "_TextBlock", (object)("", item.content)))
     }
 </div>

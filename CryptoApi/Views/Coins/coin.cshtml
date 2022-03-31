@@ -27,7 +27,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                @*@await Html.PartialAsync("_CoinPairs")*@
+                @await Html.PartialAsync("_CoinPairs")
             </div>
         </div>
     </div>
@@ -66,8 +66,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                @*@await Html.PartialAsync("_Faq")*@
-                @*@await Html.PartialAsync("_SectionTextBlock")*@
+                @await Html.PartialAsync("_SectionTextBlock", ("Frequently Asked Questions", "_Faq", (object)("model to faq")))
             </div>
         </div>
     </div>
