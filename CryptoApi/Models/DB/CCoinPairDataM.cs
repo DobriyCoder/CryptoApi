@@ -7,13 +7,13 @@ public class CCoinPairDataM
 {
     public uint coin1_id => coin_1.id;
     public uint coin2_id => coin_2.id;
-    public decimal? price_1 => 123;//{ get; set; }
-    public decimal? price_2 => 2345;// { get; set; }
-    public decimal? day_percent => 5423;// { get; set; }
-    public decimal? day_high_1 => 745;// { get; set; }
-    public decimal? day_high_2 => 237;// { get; set; }
-    public decimal? day_low_1 => 8756;// { get; set; }
-    public decimal? day_low_2 => 845;// { get; set; }
+    public decimal? price_1 => CCurrMath.Exchange(coin_1.ext.LastOrDefault()?.usd_price, coin_2.ext.LastOrDefault()?.usd_price);
+    public decimal? price_2 => CCurrMath.Exchange(coin_2.ext.LastOrDefault()?.usd_price, coin_1.ext.LastOrDefault()?.usd_price);
+    public decimal? day_percent => 0;// { get; set; }
+    public decimal? day_high_1 => 0;// { get; set; }
+    public decimal? day_high_2 => 0;// { get; set; }
+    public decimal? day_low_1 => 0;// { get; set; }
+    public decimal? day_low_2 => 0;// { get; set; }
     public decimal? market_cap => 274;// { get; set; }
     public IEnumerable<CCoinPairsMetaDataM> meta { get; private set; }
     public CCoinDataM coin_1 { get; private set; }

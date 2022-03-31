@@ -34,7 +34,7 @@ static public class CTextTmpM
         {
             if (field.Name == "Item") continue;
 
-            result.Add(field.Name, (string)field.GetValue(fields).ToString());
+            result.Add(field.Name, (string)field.GetValue(fields)?.ToString());
         }
 
         return result;
@@ -64,8 +64,9 @@ static public class CTextTmpM
 
         return dict1;
     }
-    static public string Parse (string text, string pairs, object? fields = null)
+    static public string Parse (string text, string? pairs, object? fields = null)
     {
+        if (pairs == null) return text;
         var pairs_data = ParsePairs(pairs);
         var fields_data = ParseFields(fields);
         pairs_data = Concat(pairs_data, fields_data);
