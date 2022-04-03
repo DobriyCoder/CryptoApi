@@ -2,10 +2,11 @@
 
 namespace CryptoApi.Models.DB
 {
-    public class CCoinsExtDataM
+    public class CCoinsExtDataM : IUpdatedData
     {
         public uint id { get; set; }
         public uint coins_id { get; set; }
+
         public decimal? change_week => 12.71m;
         public decimal? change_month => 15.33m;
         public decimal? change_day => 3.17m;
