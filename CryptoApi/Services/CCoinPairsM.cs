@@ -23,6 +23,7 @@ public class CCoinPairsM : CBaseDbM
 
     private IEnumerable<CCoinPairDataM> GetPairsData ()
     {
+        yield break;
         var coins = coinsModel.GetTrueCoins().ToArray();
 
         foreach (var coin1 in coins)

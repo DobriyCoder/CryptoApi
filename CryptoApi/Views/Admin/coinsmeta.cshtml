@@ -7,18 +7,16 @@
     @using (Html.BeginForm("CoinsMeta", "Admin", FormMethod.Post))
     {
         <p>
-            <label>coin_id: </label>
-            <select name="coin_pair_id" id="coin_pair_id" >
-                <option value="" selected disabled hidden></option>
-                @foreach (var coin in BlocksHelper.GetCoinList(100))
-                {
-                    <option value="@coin.data.id">@coin.data.id (@coin.data.name ---/--- @coin.data.name_full)</option>
-                }
-            </select>
+            <label>coin name: </label>
+            <input name="name" id="coin_pair_id" >
         </p>
         <p>
             <label>group: </label>
-            @Html.Editor("group")
+            <select name="group">
+                <option value="description">Описание монеты</option>
+                <option value="texts">Тексты монеты</option>
+                <option value="faq">Faq монеты</option>
+            </select>
         </p>
         <p>
             <label>option: </label>

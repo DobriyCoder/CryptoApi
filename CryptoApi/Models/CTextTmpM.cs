@@ -66,7 +66,6 @@ static public class CTextTmpM
     }
     static public string Parse (string text, string? pairs, object? fields = null)
     {
-        if (pairs == null) return text;
         var pairs_data = ParsePairs(pairs);
         var fields_data = ParseFields(fields);
         pairs_data = Concat(pairs_data, fields_data);

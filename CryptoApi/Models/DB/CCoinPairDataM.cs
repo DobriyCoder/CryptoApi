@@ -7,6 +7,11 @@ public class CCoinPairDataM
 {
     public uint coin1_id => coin_1.id;
     public uint coin2_id => coin_2.id;
+    public string name_1 => coin_1.name;
+    public string name_2 => coin_2.name;
+    public string name_full_1 => coin_1.name_full;
+    public string name_full_2 => coin_2.name_full;
+
     public decimal? price_1 => CCurrMath.Exchange(coin_1.ext.LastOrDefault()?.usd_price, coin_2.ext.LastOrDefault()?.usd_price);
     public decimal? price_2 => CCurrMath.Exchange(coin_2.ext.LastOrDefault()?.usd_price, coin_1.ext.LastOrDefault()?.usd_price);
     public decimal? day_percent => 0;// { get; set; }

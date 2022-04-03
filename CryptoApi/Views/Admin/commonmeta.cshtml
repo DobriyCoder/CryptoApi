@@ -7,7 +7,14 @@
     {
         <p>
             <label>group: </label>
-            @Html.Editor("group")
+            <select name="group">
+                <option value="coin desc">Описание монеты</option>
+                <option value="coin texts">Тексты монеты</option>
+                <option value="coin faq">Faq монеты</option>
+                <option value="pair desc">Описание пары</option>
+                <option value="pair texts">Тексты пары</option>
+                <option value="pair faq">Faq пары</option>
+            </select>
         </p>
         <p>
             <label>option: </label>
