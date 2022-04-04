@@ -45,6 +45,12 @@ public class CCoinPairsM : CBaseDbM
             uint index1 = i / count;
             uint index2 = i % count;
 
+            if (index1 == index2)
+            {
+                //limit++;
+                continue;
+            }
+
             yield return new CCoinPairDataM(coins[index1], coins[index2], GetMeta(coins[index1].id, coins[index2].id));
         }
     }

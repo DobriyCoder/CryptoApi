@@ -86,7 +86,7 @@ public class CCoinsM : CBaseDbM
         new_coin.name_full = coin.FullName;
         new_coin.name = coin.Name;
         new_coin.slug = coin.Name;
-        new_coin.image = coin.Image;
+        new_coin.image = coin.Image ?? new_coin.image;
         new_coin.last_updated = now;
 
         if (coin.UsdPrice == null) return new_coin;

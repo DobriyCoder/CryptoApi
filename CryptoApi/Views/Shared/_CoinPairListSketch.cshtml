@@ -66,10 +66,10 @@
         <div class="data-table__body-item-cell-wrap data-table__body-item-cell-wrap--right data-table__body-item-cell-wrap--changePerc">
             <div class="dual-value-display">
                 <div class="dual-value-display__text">
-                    @(Model.coin1.ext.LastOrDefault()?.change_day == 0 ? "-": Model.coin1.ext.LastOrDefault()?.change_day)
+                    @Model.data.day_percent_change_1
                 </div>
                 <div class="dual-value-display__text dual-value-display__text--secondary">
-                    @(Model.coin2.ext.LastOrDefault()?.change_day == 0 ? "-": Model.coin2.ext.LastOrDefault()?.change_day + 5.13m)
+                    @Model.data.day_percent_change_2
                 </div>
             </div>
         </div>
