@@ -327,7 +327,7 @@
     opacity: 1;
 }
 .data-table__body-item-cell {
-    white-space: nowrap;
+    /*white-space: nowrap;*/
     text-overflow: ellipsis;
 }
 .dc-coin-display__icons span {
