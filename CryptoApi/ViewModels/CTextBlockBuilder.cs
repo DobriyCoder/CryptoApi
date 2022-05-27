@@ -27,7 +27,7 @@ public class CTextBlockBuilder
     /// <summary>
     ///     Заполняет поле данными.
     /// </summary>
-    public CTextBlockBuilder SetTitleValues(string? values)
+    public CTextBlockBuilder SetTitleValues(string values)
     {
         _titleTmpVlues = values;
         return this;

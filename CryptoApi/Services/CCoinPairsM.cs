@@ -18,33 +18,34 @@ public class CCoinPairsM : CBaseDbM
     public CCoinPairsM(CDbM db, CCoinsM coins) : base(db)
     {
         coinsModel = coins;
-        db.CoinPairs = GetPairsData();
+        /*db.CoinPairs = GetPairsData();*/
     }
 
-    private IEnumerable<CCoinPairDataM> GetPairsData ()
+    public IEnumerable<CCoinPairDataM> GetPairsData (string? filter = null)
     {
-        yield break;
-        var coins = coinsModel.GetTrueCoins().ToArray();
+        //var coins = coinsModel.GetTrueCoins(filter).ToArray();
+        var coins = new CCoinDataM[0];
 
         foreach (var coin1 in coins)
         {
             foreach (var coin2 in coins)
             {
+                if (coin1.name == coin2.name || coin1.id > coin2.id) continue;
+
                 yield return new CCoinPairDataM(coin1, coin2, GetMeta(coin1.id, coin2.id));
             }
         }
     }
 
-    private IEnumerable<CCoinPairDataM> GetPairsData(uint shift, int limit)
+    private IEnumerable<CCoinPairDataM>? GetPairsData(uint shift, int limit, CCoinDataM[] coins)
     {
-        var coins = coinsModel.GetTrueCoins().ToArray();
         uint count = (uint)coins.Length;
         
         for (uint i = shift; i < shift + limit; i++)
         {
             uint index1 = i / count;
             uint index2 = i % count;
-
+            //if (index1 > index2) break;
             if (index1 == index2)
             {
                 //limit++;
@@ -64,18 +65,32 @@ public class CCoinPairsM : CBaseDbM
     /// <summary>
     ///     Возвращает количество пар.
     /// </summary>
-    public uint Count()
+    public uint Count(string? filter = null)
     {
-        int count = coinsModel.TrueCount();
-        return (uint)(count*count);
+        int count = coinsModel.TrueCount(filter);
+
+        uint pair_count = 0;
+        for (uint i = 1; i < count; i++)
+        {
+            pair_count += i;
+        }
+
+        Console.WriteLine(pair_count);
+        Console.WriteLine(count * count - count);
+        //return (uint)(count*count - count);
+        return pair_count;
+        //return (uint)(count*count - count);
     }
 
     /// <summary>
     ///     Достает пары из БД используя исходное заданное количество и номер страницы.
     /// </summary>
-    public IEnumerable<CCoinPairDataVM> GetPairs(int page, int count)
+    public IEnumerable<CCoinPairDataVM>? GetPairs(int page, int count, string? filter = null)
     {
-        return GetPairsData((uint)(--page * count), count)
+        var coins = coinsModel.GetTrueCoins(filter).ToArray();
+        if (coins.Count() == 0) return null;
+
+        return GetPairsData((uint)(--page * count), count, coins)
             .Select(p => new CCoinPairDataVM()
             {
                 data = p,
@@ -89,7 +104,9 @@ public class CCoinPairsM : CBaseDbM
     /// </summary>
     public IEnumerable<CCoinPairDataVM> GetPairs(CCoinPairDataM pair)
     {
-        return GetPairsData(0, 10)
+        var coins = coinsModel.GetTrueCoins().ToArray();
+        //var coins = new CCoinDataM[0];
+        return GetPairsData(0, 10, coins)
             .Select(p => new CCoinPairDataVM
             {
                 data = p,
@@ -117,9 +134,9 @@ public class CCoinPairsM : CBaseDbM
     /// <summary>
     ///     Возвращает число максимально возможной страницы для пагинации.
     /// </summary>
-    public int GetMaxPage(int count)
+    public int GetMaxPage(int count, string? filter = null)
     {
-        int max_count = (int)Math.Ceiling(Count() / count * 1f);
+        int max_count = (int)Math.Ceiling(Count(filter) / count * 1f);
         return max_count;
     }
 }

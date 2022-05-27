@@ -2,6 +2,7 @@
 using CryptoApi.Models.DB;
 using CryptoApi.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace CryptoApi.Services;
 
@@ -36,7 +37,7 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public CCoinDataM? HasCoin(string donor, string name)
     {
-        return db.Coins.Where(c => c.name == name).FirstOrDefault();
+        return db.Coins.Where(c => c.name.ToUpper() == name.ToUpper()).FirstOrDefault();
     }
 
     /// <summary>
@@ -61,6 +62,7 @@ public class CCoinsM : CBaseDbM
     public async Task AddCoinAsync(IApiCoin coin, bool save = true)
     {
         await db.Coins.AddAsync(ApiToData(coin));
+            //db.SaveChangesAsync();
         if (save) await db.SaveChangesAsync();
     }
 
@@ -70,6 +72,7 @@ public class CCoinsM : CBaseDbM
     public async Task UpdateCoinAsync(IApiCoin coin, CCoinDataM? has_coin, bool save = true)
     {
         ApiToData(coin, has_coin);
+        //await db.SaveChanges();
         if (save) await db.SaveChangesAsync();
     }
 
@@ -80,6 +83,9 @@ public class CCoinsM : CBaseDbM
     {
         var new_coin = data ?? new CCoinDataM();
         var now = DateTime.Now;
+
+        if (data == null)
+            new_coin.enable = true;
 
         new_coin.donor = coin.Donor;
         new_coin.donor_id = coin.Id;
@@ -98,6 +104,10 @@ public class CCoinsM : CBaseDbM
             low = coin.Low,
             high = coin.High,
             last_updated = now,
+            circulating_supply = coin.CirculatingSupply,
+            total_supply = coin.TotalSupply.ToString(),
+            market_cap_rank = coin.MarketCapRank,
+            total_volume = coin.TotalVolume
         };
 
         new_coin.ext.Add(ext);
@@ -120,6 +130,8 @@ public class CCoinsM : CBaseDbM
                 await UpdateCoinAsync(coin, has_coin, false);
             else
                 await AddCoinAsync(coin, false);
+
+            await db.SaveChangesAsync();
         }
 
         await db.SaveChangesAsync();
@@ -128,34 +140,59 @@ public class CCoinsM : CBaseDbM
     /// <summary>
     ///     Возвращает количество монет.
     /// </summary>
-    public int Count()
+    public uint Count(string? filter = null)
     {
-        return db.Coins.Count<CCoinDataM>();
+        return (uint)db.Coins
+            .Where(c => (filter == "" || filter == null) ? true : c.name.Contains(filter) || c.name_full.Contains(filter))
+            .Count();
     }
 
-    public int TrueCount()
+    public int TrueCount(string? filter = null)
     {
-        return GetTrueCoins().Count();
+        return GetTrueCoins(filter).Count();
     }
 
     /// <summary>
     ///     Достает монеты из БД используя исходное заданное количество и номер страницы.
     /// </summary>
-    public IEnumerable<CCoinDataVM> GetCoins (int page, int count)
+    public IEnumerable<CCoinDataVM> GetCoins(int page, int count, string? filter = null, string? order = null)
     {
-        return db.Coins
-            .Include(c => c.ext)
-            .Select(c => new CCoinDataVM()
-            {
-                data = c
-            })
-            .Skip((page - 1) * count)
-            .Take(count);
-    }
+        var result = db.Coins;
 
-    public IEnumerable<CCoinDataM> GetTrueCoins()
+        /*if (order != null)
+            result = result.OrderByDescending(c =>
+            {
+                Type type = typeof(CCoinDataM);
+                return type.GetProperty(order).GetValue(c, null);
+            });*/
+
+        /*if (filter != "" && filter != null)
+            result = result.Where(c => c.name.Contains(filter) || c.name_full.Contains(filter));*/
+            
+        return result
+            .Where(c => c.enable.Value)
+            .Skip((page - 1) * count)
+            .Take(count)
+            .Include(c => c.ext)
+            .Include(c => c.meta)
+            .Select(c => 
+                //c.meta = db.CoinsMeta.Where(m => m.coins_id == c.id);
+                //c.ext = db.CoinsExt.Where(e => e.coins_id == c.id);
+
+                new CCoinDataVM()
+                {
+                    data = c
+                }
+            );
+    }
+    public IEnumerable<CCoinDataM> GetCoins() => db.Coins.Where(c => c.enable.Value);
+
+    public IEnumerable<CCoinDataM> GetTrueCoins(string? filter = null)
     {
+        filter = filter == null ? "" : filter;
+
         return db.Coins
+            .Where(c => c.enable.Value && (filter == "" || c.name.Contains(filter) || c.name_full.Contains(filter)))
             .Include(c => c.ext);
             //.Where(c => c.ext.Count() > 0);
     }
@@ -190,9 +227,9 @@ public class CCoinsM : CBaseDbM
     /// <summary>
     ///     Возвращает число максимально возможной страницы для пагинации.
     /// </summary>
-    public int GetMaxPage (int count)
+    public int GetMaxPage (int count, string? filter = null)
     {
-        int max_count = (int)Math.Ceiling(Count() / count * 1f);
+        int max_count = (int)Math.Ceiling(Count(filter) / count * 1f);
         return max_count;
     }
 

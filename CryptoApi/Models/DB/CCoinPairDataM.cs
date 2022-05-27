@@ -7,8 +7,8 @@ public class CCoinPairDataM
 {
     public uint coin1_id => coin_1.id;
     public uint coin2_id => coin_2.id;
-    public string name_1 => coin_1.name;
-    public string name_2 => coin_2.name;
+    public string name_1 => coin_1.name.ToUpper();
+    public string name_2 => coin_2.name.ToUpper();
     public string name_full_1 => coin_1.name_full;
     public string name_full_2 => coin_2.name_full;
 
@@ -26,11 +26,24 @@ public class CCoinPairDataM
     public decimal? month_percent_change_2 => coin_2.month_percent_change;
 
     public decimal? day_percent => 0;// { get; set; }
-    public decimal? day_high_1 => 0;// { get; set; }
-    public decimal? day_high_2 => 0;// { get; set; }
-    public decimal? day_low_1 => 0;// { get; set; }
-    public decimal? day_low_2 => 0;// { get; set; }
-    public decimal? market_cap => 274;// { get; set; }
+    public decimal? day_high_1 => coin_1.high;// { get; set; }
+    public decimal? day_high_2 => coin_2.high;// { get; set; }
+    public decimal? day_low_1 => coin_1.low;// { get; set; }
+    public decimal? day_low_2 => coin_2.low;// { get; set; }
+    public decimal? market_cap => coin_1.market_cap;// { get; set; }
+
+    public string max_supply_1 => coin_1.max_supply;
+    public string max_supply_2 => coin_2.max_supply;
+
+    public decimal? cmc_rank_1 => coin_1.cmc_rank;
+    public decimal? cmc_rank_2 => coin_2.cmc_rank;
+
+    public decimal? volume_24h_1 => coin_1.volume_24h;
+    public decimal? volume_24h_2 => coin_2.volume_24h;
+
+    public string? circulating_supply_1 => coin_1.circulating_supply;
+    public string? circulating_supply_2 => coin_2.circulating_supply;
+
     public IEnumerable<CCoinPairsMetaDataM> meta { get; private set; }
     public CCoinDataM coin_1 { get; private set; }
     public CCoinDataM coin_2 { get; private set; }

@@ -11,7 +11,43 @@ public class CCoinPairVM
     private IConfiguration conf;
     public CCoinPairDataVM pair;
     private CCommonM commonModel;
+    public CTextBlockVM SeoInfo
+    {
+        get
+        {
+            string title = pair.data["seo", "title"] != null ? pair.data["seo", "title"].value : commonModel["pair seo", "title"]?.value;
+            string text = pair.data["seo", "text"] != null ? pair.data["seo", "text"].value : commonModel["pair seo", "text"]?.value;
 
+            return new CTextBlockBuilder()
+                .SetTitle(title)
+                .SetTitleValues(pair.data["seo tpl", "title"]?.value)
+                .SetTitleData(pair.data)
+                .SetText(text)
+                .SetTextValues(pair.data["seo tpl", "text"]?.value)
+                .SetTextData(null)
+                .Build();
+        }
+    }
+    /// <summary>
+    ///     Возвращает заголовок страницы из БД.
+    /// </summary>
+    public CTextBlockVM PageHead
+    {
+        get
+        {
+            string title = pair.data["pagehead", "title"] != null ? pair.data["pagehead", "title"].value : commonModel["pair pagehead", "title"]?.value;
+            string text = pair.data["pagehead", "text"] != null ? pair.data["pagehead", "text"].value : commonModel["pair pagehead", "text"]?.value;
+
+            return new CTextBlockBuilder()
+                .SetTitle(title)
+                .SetTitleValues(pair.data["pagehead tpl", "title"]?.value)
+                .SetTitleData(pair.data)
+                .SetText(text)
+                .SetTextValues(text)
+                .SetTextData(null)
+                .Build();
+        }
+    }
     /// <summary>
     ///     Используя паттерн Buider генерирует модель текстового блока "Описания" и возвращает ее.
     /// </summary>
@@ -50,8 +86,8 @@ public class CCoinPairVM
     {
         for (var i = 0; i < commonModel[group].Count() / 2; i++)
         {
-            string pair_title = pair.data[coin_group, $"title{i + 1}"]?.value;
-            string pair_text = pair.data[coin_group, $"text{i + 1}"]?.value;
+            string pair_title = pair.data[coin_group, $"title{i + 1}"]?.value ?? "";
+            string pair_text = pair.data[coin_group, $"text{i + 1}"]?.value ?? "";
 
             string title = pair_title != null ? pair_title : commonModel[group, $"title{i + 1}"].value;
             string text = pair_text != null ? pair_text : commonModel[group, $"text{i + 1}"].value;
