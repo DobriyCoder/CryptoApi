@@ -88,8 +88,8 @@ public class CCoinVM
     {
         for (var i = 0; i < commonModel[group].Count() / 2; i++)
         {
-            string coin_title = coin.data[coin_group, $"title{i + 1}"]?.value;
-            string coin_text = coin.data[coin_group, $"text{i + 1}"]?.value;
+            string coin_title = coin.data[coin_group, $"title{i + 1}"]?.value ?? "";
+            string coin_text = coin.data[coin_group, $"text{i + 1}"]?.value ?? "";
 
             string title = coin_title != null ? coin_title : commonModel[group, $"title{i + 1}"].value;
             string text = coin_text != null ? coin_text : commonModel[group, $"text{i + 1}"].value;

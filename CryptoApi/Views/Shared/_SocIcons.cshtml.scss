@@ -22,10 +22,6 @@
             height: 16px;
             fill: #d6e0ee;
         }
-
-        :hover {
-            filter: invert(0.3);
-        }
     }
 
     @include media-breakpoint-down (sm) {

@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<CDbM>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-, ServiceLifetime.Singleton);
+, ServiceLifetime.Transient);
 
 builder.Services.AddTransient<CCommonM>();
 builder.Services.AddTransient<CCoinsM>();

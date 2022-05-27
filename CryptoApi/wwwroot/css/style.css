@@ -6,7 +6,7 @@
  * Copyright 2011-2021 The Bootstrap Authors
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
+ */ 
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400&display=swap");
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap);
@@ -7260,6 +7260,8 @@ a.text-dark:hover, a.text-dark:focus {
       font-weight: 400 !important;
       text-align: right;
       color: #63696F; }
+  .dcg-tpg td ~ td {
+    padding-left: 10px; }
   .dcg-tpg tr {
     border-bottom: 1px solid #ECECEC; }
   .dcg-tpg td {
@@ -7698,9 +7700,7 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
     letter-spacing: -0.25px; }
 
 .dc-advantage {
-  padding: 10px;
-  height: 220px;
-  border-radius: 7px; }
+  padding: 10px; }
   .dc-advantage__image-wrapper svg {
     width: 40px;
     height: 40px;
@@ -7793,9 +7793,6 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
 .dc-coin-info table td:first-child {
   width: 185px; }
 
-.dc-coin-info table td ~ td {
-  padding-left: 10px; }
-
 @media (max-width: 991.98px) {
   .dc-coin-info {
     margin-top: 20px; }
@@ -7886,8 +7883,6 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
     width: 130px; }
   .dc-coin-pair-info table td:first-child {
     width: 185px; }
-  .dc-coin-pair-info table td ~ td {
-    padding-left: 10px; }
   @media (max-width: 991.98px) {
     .dc-coin-pair-info {
       margin-top: 20px; }
@@ -7950,20 +7945,14 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
 .dc-contacts .dcg-h3 {
   color: #FFF;
   font-size: 20px; }
-  .dc-contacts .dcg-h3 a {
-    color: #FFF;
-    font-size: 20px;
-    font-weight: 400; }
 
 .dc-contacts .dcg-h3 ~ .dcg-h3 {
   padding-top: 5px; }
 
 .dc-contacts a {
   color: #c0cee5;
+  font-weight: 700;
   letter-spacing: -0.9px; }
-  .dc-contacts a:hover {
-    text-decoration: underline;
-    color: #fff; }
 
 .dc-copyright {
   margin-top: 45px;
@@ -8041,6 +8030,8 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
   letter-spacing: -0.4px;
   font-size: 15px;
   padding: 34px 0 60px 0; }
+  .dc-footer a:hover {
+    filter: invert(0.3); }
   @media (max-width: 991.98px) {
     .dc-footer {
       padding-bottom: 20px;
@@ -8259,8 +8250,6 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
     width: 550px; }
   .dc-market-coin-pairs__to-arrow {
     text-align: center; }
-  .dc-market-coin-pairs .dc-coin .dcg-icon-arrow-right {
-    display: none !important; }
   .dc-market-coin-pairs .dc-table th svg {
     width: 11px;
     height: 14px;
@@ -8286,6 +8275,8 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
     text-align: end;
     width: 165px;
     padding-right: 28px !important; }
+  .dc-market-coin-pairs .dc-table .dcg-icon-arrow-right {
+    display: none !important; }
   .dc-market-coin-pairs .dc-market-search .dc-market-search__wrapper {
     width: 100%;
     margin-left: auto; }
@@ -8860,28 +8851,17 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
   padding-bottom: 0; }
 
 .dc-partners__partner {
-  padding: 48px 15px 0 15px;
-  display: block; }
+  margin-top: 60px;
+  padding: 0px 7px;
+  text-align: center; }
   .dc-partners__partner img {
-    height: 60px;
     width: auto;
-    display: block;
+    height: 60px; }
+
+@media (max-width: 991.98px) {
+  .dc-partners__partner {
     margin-left: auto;
-    margin-right: auto;
-    opacity: 0.8; }
-
-.dc-partners__partner:hover img {
-  opacity: 1; }
-
-.dc-partners div:nth-child(6) .dc-partners__partner {
-  padding-top: 38px; }
-  .dc-partners div:nth-child(6) .dc-partners__partner img {
-    height: 90px; }
-
-.dc-partners div:nth-child(7) .dc-partners__partner {
-  padding-top: 28px; }
-  .dc-partners div:nth-child(7) .dc-partners__partner img {
-    height: 110px; }
+    margin-right: auto; } }
 
 .dc-section-text-block .dcg-h2 {
   text-align: start;
@@ -8987,9 +8967,6 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
   margin-right: 16px;
   height: 16px;
   fill: #d6e0ee; }
-
-.dc-soc-icons a :hover {
-  filter: invert(0.3); }
 
 .dc-subheader-coin .dcg-h1 {
   margin-bottom: 39px; }
@@ -9230,6 +9207,34 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
   box-shadow: unset; }
 
 /*.....................................*/
+/* TEMPLATE: classes */
+.dc-classes {
+  width: 1024px;
+  margin: auto;
+  /*..................................... Buttons*/
+  /*..................................... Inputs*/
+  /*.....................................*/ }
+  .dc-classes section {
+    text-align: center; }
+  .dc-classes__checkbox-wrapper label {
+    display: block; }
+  .dc-classes__container {
+    padding: 15px;
+    text-align: center; }
+  .dc-classes__container-headline {
+    text-align: center; }
+  .dc-classes__container-list {
+    font-size: 20px; }
+  .dc-classes .dcg-button {
+    width: 150px;
+    margin: 10px; }
+  .dc-classes .dcg-input {
+    width: 200px;
+    margin: 10px; }
+
+/* /TEMPLATE: classes */
+/*.....................................*/
+/*.....................................*/
 /* TEMPLATE: _logo */
 /* /TEMPLATE: _logo */
 /*.....................................*/
@@ -9270,34 +9275,6 @@ button, [type="button"], [type="submit"], [type="reset"], .dcg-btn {
     transform: rotate(180deg); }
 
 /* /TEMPLATE: _menu */
-/*.....................................*/
-/*.....................................*/
-/* TEMPLATE: classes */
-.dc-classes {
-  width: 1024px;
-  margin: auto;
-  /*..................................... Buttons*/
-  /*..................................... Inputs*/
-  /*.....................................*/ }
-  .dc-classes section {
-    text-align: center; }
-  .dc-classes__checkbox-wrapper label {
-    display: block; }
-  .dc-classes__container {
-    padding: 15px;
-    text-align: center; }
-  .dc-classes__container-headline {
-    text-align: center; }
-  .dc-classes__container-list {
-    font-size: 20px; }
-  .dc-classes .dcg-button {
-    width: 150px;
-    margin: 10px; }
-  .dc-classes .dcg-input {
-    width: 200px;
-    margin: 10px; }
-
-/* /TEMPLATE: classes */
 /*.....................................*/
 /* /TEMPLATES */
 /*------------------------------------------------------------*/

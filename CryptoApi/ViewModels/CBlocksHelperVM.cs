@@ -29,7 +29,7 @@ public class CBlocksHelperVM
     /// </summary>
     public IEnumerable<CCoinDataVM> GetCoinList(int count, int page = 1, string filter = "", string? order = null)
     {
-        return coinsModel.GetCoins(page, count, filter, order);
+        return coinsModel.GetCoins(page, count, filter, order); ;
     }
     /// <summary>
     ///     Возвращает список похожих монет относительно текущей.

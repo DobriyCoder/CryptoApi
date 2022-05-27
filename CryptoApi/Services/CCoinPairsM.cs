@@ -23,13 +23,14 @@ public class CCoinPairsM : CBaseDbM
 
     public IEnumerable<CCoinPairDataM> GetPairsData (string? filter = null)
     {
-        var coins = coinsModel.GetTrueCoins(filter).ToArray();
+        //var coins = coinsModel.GetTrueCoins(filter).ToArray();
+        var coins = new CCoinDataM[0];
 
         foreach (var coin1 in coins)
         {
             foreach (var coin2 in coins)
             {
-                if (coin1.name == coin2.name) continue;
+                if (coin1.name == coin2.name || coin1.id > coin2.id) continue;
 
                 yield return new CCoinPairDataM(coin1, coin2, GetMeta(coin1.id, coin2.id));
             }
@@ -87,7 +88,6 @@ public class CCoinPairsM : CBaseDbM
     public IEnumerable<CCoinPairDataVM>? GetPairs(int page, int count, string? filter = null)
     {
         var coins = coinsModel.GetTrueCoins(filter).ToArray();
-
         if (coins.Count() == 0) return null;
 
         return GetPairsData((uint)(--page * count), count, coins)
@@ -105,7 +105,7 @@ public class CCoinPairsM : CBaseDbM
     public IEnumerable<CCoinPairDataVM> GetPairs(CCoinPairDataM pair)
     {
         var coins = coinsModel.GetTrueCoins().ToArray();
-
+        //var coins = new CCoinDataM[0];
         return GetPairsData(0, 10, coins)
             .Select(p => new CCoinPairDataVM
             {

@@ -37,7 +37,7 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public CCoinDataM? HasCoin(string donor, string name)
     {
-        return db.Coins.Where(c => c.name == name).FirstOrDefault();
+        return db.Coins.Where(c => c.name.ToUpper() == name.ToUpper()).FirstOrDefault();
     }
 
     /// <summary>
@@ -157,38 +157,33 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public IEnumerable<CCoinDataVM> GetCoins(int page, int count, string? filter = null, string? order = null)
     {
-        IEnumerable<CCoinDataM> result = db.Coins;
+        var result = db.Coins;
 
-        if (order != null)
-            if(order != "name")
+        /*if (order != null)
+            result = result.OrderByDescending(c =>
             {
-                result = result.OrderByDescending(c =>
-                {
-                    Type type = typeof(CCoinDataM);
-                    return type.GetProperty(order).GetValue(c, null);
-                });
-            }
-            else
-            {
-                result = result.OrderBy(c =>
-                {
-                    Type type = typeof(CCoinDataM);
-                    return type.GetProperty(order).GetValue(c, null);
-                });
-            }
+                Type type = typeof(CCoinDataM);
+                return type.GetProperty(order).GetValue(c, null);
+            });*/
 
-        if (filter != "" && filter != null)
-            result = result.Where(c => c.name.Contains(filter) || c.name_full.Contains(filter));
+        /*if (filter != "" && filter != null)
+            result = result.Where(c => c.name.Contains(filter) || c.name_full.Contains(filter));*/
             
         return result
             .Where(c => c.enable.Value)
             .Skip((page - 1) * count)
             .Take(count)
-            //.Include(c => c.ext)
-            .Select(c => new CCoinDataVM()
-            {
-                data = c
-            }).ToList();
+            .Include(c => c.ext)
+            .Include(c => c.meta)
+            .Select(c => 
+                //c.meta = db.CoinsMeta.Where(m => m.coins_id == c.id);
+                //c.ext = db.CoinsExt.Where(e => e.coins_id == c.id);
+
+                new CCoinDataVM()
+                {
+                    data = c
+                }
+            );
     }
     public IEnumerable<CCoinDataM> GetCoins() => db.Coins.Where(c => c.enable.Value);
 

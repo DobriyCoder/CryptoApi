@@ -86,8 +86,8 @@ public class CCoinPairVM
     {
         for (var i = 0; i < commonModel[group].Count() / 2; i++)
         {
-            string pair_title = pair.data[coin_group, $"title{i + 1}"]?.value;
-            string pair_text = pair.data[coin_group, $"text{i + 1}"]?.value;
+            string pair_title = pair.data[coin_group, $"title{i + 1}"]?.value ?? "";
+            string pair_text = pair.data[coin_group, $"text{i + 1}"]?.value ?? "";
 
             string title = pair_title != null ? pair_title : commonModel[group, $"title{i + 1}"].value;
             string text = pair_text != null ? pair_text : commonModel[group, $"text{i + 1}"].value;

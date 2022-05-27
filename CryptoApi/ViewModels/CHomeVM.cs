@@ -48,8 +48,8 @@ public class CHomeVM
     {
         for (var i = 0; i < commonModel[group].Count() / 2; i++)
         {
-            string title = commonModel[group, $"title{i + 1}"].value;
-            string text = commonModel[group, $"text{i + 1}"].value;
+            string title = commonModel[group, $"title{i + 1}"]?.value ?? "";
+            string text = commonModel[group, $"text{i + 1}"]?.value ?? "";
 
             yield return new CTextBlockBuilder()
                 .SetTitle(title)

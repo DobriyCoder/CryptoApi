@@ -1,4 +1,5 @@
-﻿using CryptoApi.Services;
+﻿using CryptoApi.Models.DB;
+using CryptoApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CryptoApi.Controllers;
@@ -39,6 +40,29 @@ public class ActualizerController : Controller
     {
         actualizer.RunAsync();
         return "run";
+    }
+
+    [Route("/actualizer/test-meta")]
+    public string TestMeta([FromServices] CDbM model, [FromServices] CCoinPairsM pairs)
+    {
+        int i = 0;
+        foreach (var pair in pairs.GetPairsData())
+        {
+            if (i++ > 10000) break;
+
+            model.CoinPairsMeta.Add(new CCoinPairsMetaDataM()
+            {
+                coin_1_id = pair.coin1_id,
+                coin_2_id = pair.coin2_id,
+                group = "pagehead",
+                option = "title",
+                value = "test title {{name_1}} " + i
+            });
+        }
+
+        model.SaveChanges();
+
+        return "TestMeta";
     }
 
     /// <summary>

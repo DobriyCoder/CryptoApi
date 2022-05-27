@@ -25,7 +25,7 @@ public class CCommonM : CBaseDbM
     /// <summary>
     ///     Возвращает все метаданные common, при условии совпадения group & option.
     /// </summary>
-    public CCommonMetaDataM this[string group, string option]
+    public CCommonMetaDataM? this[string group, string option]
     {
         get
         {
