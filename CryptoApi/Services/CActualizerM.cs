@@ -1,6 +1,7 @@
 ﻿using CryptoApi.Api;
 using CryptoApi.Models.DB;
 using CryptoApi.Sitemap;
+using Microsoft.EntityFrameworkCore;
 
 namespace CryptoApi.Services
 {
@@ -13,8 +14,9 @@ namespace CryptoApi.Services
         private IConfiguration conf;
         private IRunnerM runner;
         private ISitemap sitemap;
+        private IServiceProvider serviceProvider;
 
-        public CActualizerM (CDbM db, CCoinsM coins, CCoinPairsM pair, CApiManager api, IRunnerM runner, ISitemap sitemap)
+        public CActualizerM (CDbM db, CCoinsM coins, CCoinPairsM pair, CApiManager api, IRunnerM runner, ISitemap sitemap, IServiceProvider services)
         {
             this.db = db;
             this.coinsModel = coins;
@@ -22,6 +24,7 @@ namespace CryptoApi.Services
             this.api = api;
             this.runner = runner;
             this.sitemap = sitemap;
+            this.serviceProvider = services;
 
             conf = new ConfigurationBuilder().AddJsonFile("ConfApi.json").Build();
             var donors = conf.GetSection("Donors");
@@ -54,7 +57,17 @@ namespace CryptoApi.Services
 
         public async Task TestAsync()
         {
-            await Task.Run(api.TestAsync);
+            await Task.Delay(5000);
+
+            try
+            {
+                
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         public async Task StopAsync ()
