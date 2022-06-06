@@ -89,8 +89,8 @@ public class CCoinPairVM
             string pair_title = pair.data[coin_group, $"title{i + 1}"]?.value ?? "";
             string pair_text = pair.data[coin_group, $"text{i + 1}"]?.value ?? "";
 
-            string title = pair_title != "" ? pair_title : commonModel[group, $"title{i + 1}"].value;
-            string text = pair_text != "" ? pair_text : commonModel[group, $"text{i + 1}"].value;
+            string title = pair_title != "" ? pair_title : commonModel[group, $"title{i + 1}"]?.value ?? "";
+            string text = pair_text != "" ? pair_text : commonModel[group, $"text{i + 1}"]?.value ?? "";
 
             yield return new CTextBlockBuilder()
                 .SetTitle(title)
