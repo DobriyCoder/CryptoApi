@@ -91,8 +91,8 @@ public class CCoinVM
             string coin_title = coin.data[coin_group, $"title{i + 1}"]?.value ?? "";
             string coin_text = coin.data[coin_group, $"text{i + 1}"]?.value ?? "";
 
-            string title = coin_title != "" ? coin_title : commonModel[group, $"title{i + 1}"].value;
-            string text = coin_text != "" ? coin_text : commonModel[group, $"text{i + 1}"].value;
+            string title = coin_title != "" ? coin_title : commonModel[group, $"title{i + 1}"]?.value ?? "";
+            string text = coin_text != "" ? coin_text : commonModel[group, $"text{i + 1}"]?.value ?? "";
 
             yield return new CTextBlockBuilder()
                 .SetTitle(title)
