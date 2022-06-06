@@ -24,7 +24,7 @@ public class CCoinPairVM
                 .SetTitleData(pair.data)
                 .SetText(text)
                 .SetTextValues(pair.data["seo tpl", "text"]?.value)
-                .SetTextData(null)
+                .SetTextData(pair.data)
                 .Build();
         }
     }
@@ -43,8 +43,8 @@ public class CCoinPairVM
                 .SetTitleValues(pair.data["pagehead tpl", "title"]?.value)
                 .SetTitleData(pair.data)
                 .SetText(text)
-                .SetTextValues(text)
-                .SetTextData(null)
+                .SetTextValues(pair.data["pagehead tpl", "text"]?.value)
+                .SetTextData(pair.data)
                 .Build();
         }
     }
@@ -60,10 +60,10 @@ public class CCoinPairVM
 
             return new CTextBlockBuilder()
                 .SetTitle(title)
-                .SetTitleValues(pair.data["desc", "title"]?.value)
+                .SetTitleValues(pair.data["desc tmp", "title"]?.value)
                 .SetTitleData(pair.data)
                 .SetText(desc)
-                .SetTextValues(pair.data["desc", "text"]?.value)
+                .SetTextValues(pair.data["desc tmp", "text"]?.value)
                 .SetTextData(pair.data)
                 .Build();
         }
@@ -89,8 +89,8 @@ public class CCoinPairVM
             string pair_title = pair.data[coin_group, $"title{i + 1}"]?.value ?? "";
             string pair_text = pair.data[coin_group, $"text{i + 1}"]?.value ?? "";
 
-            string title = pair_title != null ? pair_title : commonModel[group, $"title{i + 1}"].value;
-            string text = pair_text != null ? pair_text : commonModel[group, $"text{i + 1}"].value;
+            string title = pair_title != "" ? pair_title : commonModel[group, $"title{i + 1}"].value;
+            string text = pair_text != "" ? pair_text : commonModel[group, $"text{i + 1}"].value;
 
             yield return new CTextBlockBuilder()
                 .SetTitle(title)

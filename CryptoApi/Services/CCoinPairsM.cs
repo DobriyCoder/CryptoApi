@@ -11,20 +11,23 @@ namespace CryptoApi.Services;
 public class CCoinPairsM : CBaseDbM
 {
     CCoinsM coinsModel;
+    CCommonM commonModel;
 
     /// <summary>
     ///     Конструктор. заполняет  необходимые поля при создании модели. Передает модель БД родителю.
     /// </summary>
-    public CCoinPairsM(CDbM db, CCoinsM coins) : base(db)
+    public CCoinPairsM(CDbM db, CCoinsM coins, CCommonM common) : base(db)
+    //public CCoinPairsM(CDbM db, CCoinsM coins, CDbSingM dbSign) : base(db, dbSign)
     {
         coinsModel = coins;
         /*db.CoinPairs = GetPairsData();*/
+        commonModel = common;
     }
 
     public IEnumerable<CCoinPairDataM> GetPairsData (string? filter = null)
     {
-        //var coins = coinsModel.GetTrueCoins(filter).ToArray();
-        var coins = new CCoinDataM[0];
+        var coins = coinsModel.GetTrueCoins(filter).ToArray();
+        //var coins = new CCoinDataM[0];
 
         foreach (var coin1 in coins)
         {
@@ -36,23 +39,63 @@ public class CCoinPairsM : CBaseDbM
             }
         }
     }
-
-    private IEnumerable<CCoinPairDataM>? GetPairsData(uint shift, int limit, CCoinDataM[] coins)
+    
+    private List<int[]> GetPairsIndexes(uint shift, int limit)
     {
-        uint count = (uint)coins.Length;
-        
-        for (uint i = shift; i < shift + limit; i++)
-        {
-            uint index1 = i / count;
-            uint index2 = i % count;
-            //if (index1 > index2) break;
-            if (index1 == index2)
-            {
-                //limit++;
-                continue;
-            }
+        var indexes_list = new List<int[]>();
+        uint count = this.coinsModel.Count();
+        if (count == 0) return indexes_list;
 
-            yield return new CCoinPairDataM(coins[index1], coins[index2], GetMeta(coins[index1].id, coins[index2].id));
+        uint i = shift;
+        int current = 0;
+        while (current < limit)
+        {
+            int index1 = (int)(i / count);
+            int index2 = (int)(i % count);
+            //if (index1 > index2) break;
+            i++;
+            if (index1 == index2) continue;
+
+            indexes_list.Add(new int[] { index1, index2 });
+            Console.WriteLine($"{index1}\t{index2}");
+
+            current++;
+        }
+
+        return indexes_list;
+    }
+    private Dictionary<int, CCoinDataM> GetCoinsByPairsIndexes (List<int[]> indexes_list)
+    {
+        Dictionary<int, CCoinDataM> result = new Dictionary<int, CCoinDataM>();
+
+        foreach (int[] indexes in indexes_list)
+        {
+            int index1 = indexes[0];
+            int index2 = indexes[1];
+
+            if (!result.ContainsKey(index1))
+                result.Add(index1, this.coinsModel.GetCoinByIndex((int)index1));
+
+            if (!result.ContainsKey(index2))
+                result.Add(index2, this.coinsModel.GetCoinByIndex((int)index2));
+        }
+
+        return result;
+    }
+    private IEnumerable<CCoinPairDataM>? GetPairsData(uint shift, int limit)
+    {
+        var indexes_list = GetPairsIndexes(shift, limit);
+        var coins = GetCoinsByPairsIndexes(indexes_list);
+
+        foreach (var indexes in indexes_list)
+        {
+            int index1 = indexes[0];
+            int index2 = indexes[1];
+
+            var coin1 = coins[index1];
+            var coin2 = coins[index2];
+
+            yield return new CCoinPairDataM(coin1, coin2, GetMeta(coin1.id, coin2.id));
         }
     }
 
@@ -75,11 +118,7 @@ public class CCoinPairsM : CBaseDbM
             pair_count += i;
         }
 
-        Console.WriteLine(pair_count);
-        Console.WriteLine(count * count - count);
-        //return (uint)(count*count - count);
         return pair_count;
-        //return (uint)(count*count - count);
     }
 
     /// <summary>
@@ -87,15 +126,13 @@ public class CCoinPairsM : CBaseDbM
     /// </summary>
     public IEnumerable<CCoinPairDataVM>? GetPairs(int page, int count, string? filter = null)
     {
-        var coins = coinsModel.GetTrueCoins(filter).ToArray();
-        if (coins.Count() == 0) return null;
-
-        return GetPairsData((uint)(--page * count), count, coins)
+        return GetPairsData((uint)(--page * count), count)
             .Select(p => new CCoinPairDataVM()
             {
                 data = p,
                 coin1 = p.coin_1,
-                coin2 = p.coin_2
+                coin2 = p.coin_2,
+                commonModel = commonModel,
             });
     }
 
@@ -104,14 +141,13 @@ public class CCoinPairsM : CBaseDbM
     /// </summary>
     public IEnumerable<CCoinPairDataVM> GetPairs(CCoinPairDataM pair)
     {
-        var coins = coinsModel.GetTrueCoins().ToArray();
-        //var coins = new CCoinDataM[0];
-        return GetPairsData(0, 10, coins)
+        return GetPairsData(0, 10)
             .Select(p => new CCoinPairDataVM
             {
                 data = p,
                 coin1 = p.coin_1,
-                coin2 = p.coin_2
+                coin2 = p.coin_2,
+                commonModel = commonModel,
             });
     }
 
@@ -127,7 +163,8 @@ public class CCoinPairsM : CBaseDbM
         {
             data = new CCoinPairDataM(coin1.data, coin2.data, GetMeta(coin1.data.id, coin2.data.id)),
             coin1 = coin1.data,
-            coin2 = coin2.data
+            coin2 = coin2.data,
+            commonModel = commonModel,
         };
     }
 

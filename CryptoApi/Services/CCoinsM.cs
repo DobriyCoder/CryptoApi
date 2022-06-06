@@ -11,10 +11,19 @@ namespace CryptoApi.Services;
 /// </summary>
 public class CCoinsM : CBaseDbM
 {
+    IConfiguration conf;
+    CCommonM commonModel;
+    ILogger logger;
     /// <summary>
     ///     Конструктор. Передает модель БД родителю.
     /// </summary>
-    public CCoinsM(CDbM db) : base(db) { }
+    public CCoinsM(CDbM db, IConfiguration conf, CCommonM common, ILogger logger) : base(db) 
+    {
+        this.conf = conf;
+        this.commonModel = common;
+        this.logger = logger;
+    }
+    //public CCoinsM(CDbM db, CDbSingM dbSign) : base(db, dbSign) { }
 
     /// <summary>
     ///     Возвращает словарь с моделями монет по ключу name монеты.
@@ -61,9 +70,10 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public async Task AddCoinAsync(IApiCoin coin, bool save = true)
     {
-        await db.Coins.AddAsync(ApiToData(coin));
-            //db.SaveChangesAsync();
+        var true_coin = ApiToData(coin);
+        await db.Coins.AddAsync(true_coin);
         if (save) await db.SaveChangesAsync();
+        logger.Write(true_coin, ELogMode.Add);
     }
 
     /// <summary>
@@ -72,8 +82,8 @@ public class CCoinsM : CBaseDbM
     public async Task UpdateCoinAsync(IApiCoin coin, CCoinDataM? has_coin, bool save = true)
     {
         ApiToData(coin, has_coin);
-        //await db.SaveChanges();
         if (save) await db.SaveChangesAsync();
+        logger.Write(has_coin, ELogMode.Update);
     }
 
     /// <summary>
@@ -114,19 +124,31 @@ public class CCoinsM : CBaseDbM
 
         return new_coin;
     }
+    private CDbM CreateDb ()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<CDbM>();
 
+        var options = optionsBuilder
+                .UseSqlServer(conf.GetConnectionString("DefaultConnection"))
+                .Options;
+
+        return new CDbM(options);
+    }
     /// <summary>
     ///     Асинхронно добавляет монеты.
     /// </summary>
     public async Task AddCoinsAsync(IEnumerable<IApiCoin> coins)
     {
         if (coins == null) return;
+        var old_db = this.db;
+        this.db = CreateDb();
 
         foreach (var coin in coins)
         {
-            var has_coin = HasCoin(coin);
 
-            if (has_coin != null) 
+            var has_coin = HasCoin(coin);
+            
+            if (has_coin != null)
                 await UpdateCoinAsync(coin, has_coin, false);
             else
                 await AddCoinAsync(coin, false);
@@ -135,6 +157,9 @@ public class CCoinsM : CBaseDbM
         }
 
         await db.SaveChangesAsync();
+
+        this.db.Dispose();
+        this.db = old_db;
     }
 
     /// <summary>
@@ -149,44 +174,62 @@ public class CCoinsM : CBaseDbM
 
     public int TrueCount(string? filter = null)
     {
-        return GetTrueCoins(filter).Count();
-    }
+        filter = filter == null ? "" : filter;
 
+        var coins = db.Coins
+            .Where(c => c.enable.Value && (filter == "" || c.name.Contains(filter) || c.name_full.Contains(filter)));
+
+        return coins.Count();
+    }
+    int Test(CCoinDataM c)
+    {
+        //Console.WriteLine($"{c.name}");
+        return (int)c.id;
+    }
     /// <summary>
     ///     Достает монеты из БД используя исходное заданное количество и номер страницы.
     /// </summary>
-    public IEnumerable<CCoinDataVM> GetCoins(int page, int count, string? filter = null, string? order = null)
+    public IEnumerable<CCoinDataVM> GetCoins(int page, int count, string? filter = null, string? order = null, string order_type = "ask")
     {
-        var result = db.Coins;
-
-        /*if (order != null)
-            result = result.OrderByDescending(c =>
-            {
-                Type type = typeof(CCoinDataM);
-                return type.GetProperty(order).GetValue(c, null);
-            });*/
-
         /*if (filter != "" && filter != null)
             result = result.Where(c => c.name.Contains(filter) || c.name_full.Contains(filter));*/
-            
-        return result
+        
+        var query = db.Coins.AsQueryable()
+            .Include(c => c.ext)
+            .Include(c => c.meta)
             .Where(c => c.enable.Value)
             .Skip((page - 1) * count)
             .Take(count)
-            .Include(c => c.ext)
-            .Include(c => c.meta)
-            .Select(c => 
-                //c.meta = db.CoinsMeta.Where(m => m.coins_id == c.id);
-                //c.ext = db.CoinsExt.Where(e => e.coins_id == c.id);
-
+            .Select(c =>
                 new CCoinDataVM()
                 {
-                    data = c
+                    data = c,
+                    commonModel = commonModel
                 }
-            );
+            )
+        ;
+
+        if (order != null)
+            if (order_type == "ask")
+                return query.AsEnumerable().OrderBy(c =>
+                {
+                    Type type = typeof(CCoinDataM);
+                    return type.GetProperty(order)?.GetValue(c.data, null) ?? 0;
+                });
+            else
+                return query.AsEnumerable().OrderByDescending(c =>
+                {
+                    Type type = typeof(CCoinDataM);
+                    return type.GetProperty(order)?.GetValue(c.data, null) ?? 0;
+                });
+
+        return query;
     }
     public IEnumerable<CCoinDataM> GetCoins() => db.Coins.Where(c => c.enable.Value);
-
+    public CCoinDataM GetCoinByIndex(int index)
+    {
+        return db.Coins.Skip(index).Include(c => c.ext).Where(c => c.enable.Value).First();
+    }
     public IEnumerable<CCoinDataM> GetTrueCoins(string? filter = null)
     {
         filter = filter == null ? "" : filter;
@@ -194,7 +237,7 @@ public class CCoinsM : CBaseDbM
         return db.Coins
             .Where(c => c.enable.Value && (filter == "" || c.name.Contains(filter) || c.name_full.Contains(filter)))
             .Include(c => c.ext);
-            //.Where(c => c.ext.Count() > 0);
+        //.Where(c => c.ext.Count() > 0);
     }
 
     /// <summary>

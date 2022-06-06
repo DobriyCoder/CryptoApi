@@ -11,6 +11,7 @@ public class CCommonM : CBaseDbM
     ///     Конструктор модели сервиса common. Передает экземпляр модели базы данных родителю.
     /// </summary>
     public CCommonM(CDbM db) : base(db) { }
+    //public CCommonM(CDbM db, CDbSingM dbSign) : base(db, dbSign) { }
 
     /// <summary>
     ///     Возвращает все метаданные common, при условии совпадения group.

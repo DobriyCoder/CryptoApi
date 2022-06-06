@@ -4,6 +4,7 @@ using CryptoApi.Services;
 using CryptoApi.Sitemap;
 using CryptoApi.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using ILogger = CryptoApi.Services.ILogger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<CDbM>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 , ServiceLifetime.Transient);
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<CCommonM>();
 builder.Services.AddTransient<CCoinsM>();
@@ -29,6 +32,7 @@ builder.Services.AddTransient<CActualizerM>();
 builder.Services.AddSingleton<CApiManager>();
 builder.Services.AddSingleton<IRunnerM, CRunnerM>();
 builder.Services.AddTransient<ISitemap, CSitemap>();
+builder.Services.AddTransient<ILogger, CLogger>();
 
 var app = builder.Build();
 

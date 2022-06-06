@@ -35,7 +35,7 @@ public class CCoinDataM
     public decimal? week_percent_change => ext.Count() == 0 ? null : CCurrMath.GetChangePercentPrice(7, ext);
     public decimal? month_percent_change => ext.Count() == 0 ? null : CCurrMath.GetChangePercentPrice(30, ext);
 
-    public decimal? usd_price => ext.Count() == 0 ? null : ext.Last()?.usd_price;
+    public decimal? usd_price => ext.Count() == 0 ? 0 : ext.Last()?.usd_price;
 
     public decimal? market_cap => ext.Count() == 0 ? null : ext.Last()?.market_cap;
     public decimal? low => ext.Count() == 0 ? null : ext.Last()?.low;
