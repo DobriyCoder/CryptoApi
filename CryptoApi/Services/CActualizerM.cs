@@ -33,11 +33,12 @@ namespace CryptoApi.Services
         public async Task RefreshDataAsync ()
         {
             await RefreshCoinsAsync();
-            await sitemap.CreateAsync();
+            //await sitemap.CreateAsync();
         }
         public async Task RefreshCoinsAsync()
         {
             var coins = api.GetCoinsAsync().Result;
+            Console.Write("var coins = api.GetCoinsAsync().Result;");
             await coinsModel.AddCoinsAsync(coins);
         }
         public async Task RunAsync ()

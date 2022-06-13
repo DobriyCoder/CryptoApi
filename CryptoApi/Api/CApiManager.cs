@@ -100,7 +100,7 @@ namespace CryptoApi.Api
 
             return GetCoinList();
         }
-
+/*
         public async Task<IEnumerable<IApiCoinPair>> GetCoinPairsAsync()
         {
             var lists = new List<IApiCoinPairsData>();
@@ -124,9 +124,9 @@ namespace CryptoApi.Api
             }
 
             return GetPairList();
-        }
+        }*/
 
-        public async Task<IEnumerable<IApiCoin>> GetCoinsAsync(string key)
+        /*public async Task<IEnumerable<IApiCoin>> GetCoinsAsync(string key)
         {
             return (await GetTrueApi(key).GetCoinsAsync()).GetEnumerable();
         }
@@ -134,7 +134,7 @@ namespace CryptoApi.Api
         public async Task<IEnumerable<IApiCoinPair>> GetCoinPairsAsync(string key)
         {
             return (await GetTrueApi(key).GetCoinPairsAsync()).GetEnumerable();
-        }
+        }*/
 
         public async Task TestAsync()
         {

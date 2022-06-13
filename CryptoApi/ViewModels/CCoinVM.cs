@@ -16,15 +16,15 @@ public class CCoinVM
     {
         get
         {
-            string title = coin.data["seo", "title"] != null ? coin.data["seo", "title"].value : commonModel["coin seo", "title"]?.value;
-            string text = coin.data["seo", "text"] != null ? coin.data["seo", "text"].value : commonModel["coin seo", "text"]?.value;
-
+            string? title = coin.data["seo", "title"]?.value ?? commonModel["coin seo", "title"]?.value ?? "";
+            string? text = coin.data["seo", "text"]?.value ?? commonModel["coin seo", "text"]?.value ?? "";
+            
             return new CTextBlockBuilder()
                 .SetTitle(title)
-                .SetTitleValues(coin.data["seo tpl", "title"]?.value)
+                .SetTitleValues(coin.data["seo tpl", "title"]?.value ?? "")
                 .SetTitleData(coin.data)
                 .SetText(text)
-                .SetTextValues(coin.data["seo tpl", "text"]?.value)
+                .SetTextValues(coin.data["seo tpl", "text"]?.value ?? "")
                 .SetTextData(null)
                 .Build();
         }

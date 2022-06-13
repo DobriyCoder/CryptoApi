@@ -1,4 +1,7 @@
 ﻿@model CCoinDataVM
+@{
+    Model.data.image = Model.data.image ?? "/images/coin-unknown.png";
+}
 
 <div class="dc-coin dcg-shadow-hover dcg-shadow-md">
     <a class="dc-coin__link" asp-controller="Coins" asp-action="Coin" asp-route-coin="@Model.data.name">

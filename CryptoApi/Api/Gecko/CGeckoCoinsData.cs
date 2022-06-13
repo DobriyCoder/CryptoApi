@@ -1,4 +1,5 @@
 ﻿using CoinGecko.Entities.Response.Coins;
+using CryptoApi.Services;
 using System.Collections;
 
 namespace CryptoApi.Api.Gecko
@@ -17,32 +18,39 @@ namespace CryptoApi.Api.Gecko
         }
         public IEnumerable<IApiCoin> GetEnumerable()
         {
-            Console.WriteLine("GetEnumerable");
             foreach(var coin in coins_full)
             {
                 //Console.WriteLine("image: " + coin.Image.Large.AbsoluteUri);
                 //Console.WriteLine("image: " + coin.Image.Small.AbsoluteUri);
                 //Console.WriteLine("image: " + coin.Image.Thumb.AbsoluteUri);
-                Console.WriteLine("GetEnumerable++");
-
-                yield return new CApiCoin
+                CApiCoin new_coin = default;
+                try
                 {
-                    Image = coin.Image.ToString(),
-                    Donor = key,
-                    Id = coin.Id,
-                    FullName = coin.Name,
-                    Name = coin.Symbol,
-                    UsdPrice = coin.CurrentPrice,
-                    MarketCap = coin.MarketCap,
-                    Low = coin.Low24H,
-                    High = coin.High24H,
+                    new_coin = new CApiCoin
+                    {
+                        Image = coin.Image.ToString(),
+                        Donor = key,
+                        Id = coin.Id,
+                        FullName = coin.Name,
+                        Name = coin.Symbol,
+                        UsdPrice = coin.CurrentPrice ?? 0,
+                        MarketCap = coin.MarketCap ?? 0,
+                        Low = coin.Low24H ?? 0,
+                        High = coin.High24H ?? 0,
 
-                    CirculatingSupply = coin.CirculatingSupply,
-                    TotalSupply = coin.TotalSupply,
-                    MarketCapRank = coin.MarketCapRank,
-                    TotalVolume = coin.TotalVolume
-                };
+                        CirculatingSupply = coin.CirculatingSupply,
+                        TotalSupply = coin.TotalSupply ?? 0,
+                        MarketCapRank = coin.MarketCapRank ?? 0,
+                        TotalVolume = coin.TotalVolume ?? 0,
+                    };
+                }
+                catch(Exception ex)
+                {
+                    CLogger.instance.Write($"GetEnumerable err: {ex.Message}");
+                }
+                
 
+                yield return new_coin;
                 /*yield return new CApiCoin
                 {
                     Image = coin.Image.Large.AbsoluteUri,

@@ -15,11 +15,20 @@ public class CSitemap : ISitemap
         await Task.Run(() => writer.UpdateMainSitemap());
         /*await Task.Run(() => writer.Write());*/
     }
+
+    public string? GetMainSitemap()
+    {
+        var pages = new CPages(services);
+        var writer = new CWriter(pages.GetPages(), pages.count);
+
+        return writer.GetMainSitemap();
+    }
+
     public string? GetSubSitemap(int index) 
     {
         var pages = new CPages(services);
         var writer = new CWriter(pages.GetPages(), pages.count);
-        writer.UpdateMainSitemap();
+        //writer.UpdateMainSitemap();
 
         return writer.GetSubSitemap(index);
     } 

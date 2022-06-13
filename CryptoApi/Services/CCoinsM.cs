@@ -1,4 +1,5 @@
-﻿using CryptoApi.Api;
+﻿using Atomex.Models;
+using CryptoApi.Api;
 using CryptoApi.Models.DB;
 using CryptoApi.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +15,17 @@ public class CCoinsM : CBaseDbM
     IConfiguration conf;
     CCommonM commonModel;
     ILogger logger;
+    IWebHostEnvironment env;
+
     /// <summary>
     ///     Конструктор. Передает модель БД родителю.
     /// </summary>
-    public CCoinsM(CDbM db, IConfiguration conf, CCommonM common, ILogger logger) : base(db) 
+    public CCoinsM(IWebHostEnvironment env, CDbM db, IConfiguration conf, CCommonM common, ILogger logger) : base(db) 
     {
         this.conf = conf;
         this.commonModel = common;
         this.logger = logger;
+        this.env = env;
     }
     //public CCoinsM(CDbM db, CDbSingM dbSign) : base(db, dbSign) { }
 
@@ -70,10 +74,17 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public async Task AddCoinAsync(IApiCoin coin, bool save = true)
     {
-        var true_coin = ApiToData(coin);
-        await db.Coins.AddAsync(true_coin);
+        try
+        {
+            var true_coin = ApiToData(coin);
+            db.Coins.Add(true_coin);
+            logger.Write(true_coin, ELogMode.Add);
+        }
+        catch (Exception ex)
+        {
+            logger.Write($"AddCoinAsync err: {ex.Message}");
+        }
         if (save) await db.SaveChangesAsync();
-        logger.Write(true_coin, ELogMode.Add);
     }
 
     /// <summary>
@@ -81,9 +92,26 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public async Task UpdateCoinAsync(IApiCoin coin, CCoinDataM? has_coin, bool save = true)
     {
-        ApiToData(coin, has_coin);
+        try
+        {
+            ApiToData(coin, has_coin);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"UpdateCoinAsync err: {ex}");
+        }
+
         if (save) await db.SaveChangesAsync();
-        logger.Write(has_coin, ELogMode.Update);
+        //logger.Write(has_coin, ELogMode.Update);
+    }
+
+    public string? SaveCoinIcon(string url, string name)
+    {
+        string icon_url = conf.GetValue<string>("BaseUrl") + "coin-icons/";
+        string path = env.WebRootPath.TrimEnd('/') + icon_url;
+        string? file_name = CImgLoader.Load(url, path, name);
+
+        return file_name == null ? file_name : icon_url + file_name;
     }
 
     /// <summary>
@@ -96,13 +124,13 @@ public class CCoinsM : CBaseDbM
 
         if (data == null)
             new_coin.enable = true;
-
+        
         new_coin.donor = coin.Donor;
         new_coin.donor_id = coin.Id;
         new_coin.name_full = coin.FullName;
         new_coin.name = coin.Name;
         new_coin.slug = coin.Name;
-        new_coin.image = coin.Image ?? new_coin.image;
+        new_coin.image = new_coin.image == null || new_coin.image == "" ? SaveCoinIcon(coin.Image, coin.Name) : new_coin.image;
         new_coin.last_updated = now;
 
         if (coin.UsdPrice == null) return new_coin;
@@ -114,8 +142,8 @@ public class CCoinsM : CBaseDbM
             low = coin.Low,
             high = coin.High,
             last_updated = now,
-            circulating_supply = coin.CirculatingSupply,
-            total_supply = coin.TotalSupply.ToString(),
+            circulating_supply = "",//coin.CirculatingSupply,
+            total_supply = "",//coin.TotalSupply?.ToString() ?? "",
             market_cap_rank = coin.MarketCapRank,
             total_volume = coin.TotalVolume
         };
@@ -145,18 +173,30 @@ public class CCoinsM : CBaseDbM
 
         foreach (var coin in coins)
         {
+            try
+            {
+                var has_coin = HasCoin(coin);
 
-            var has_coin = HasCoin(coin);
-            
-            if (has_coin != null)
-                await UpdateCoinAsync(coin, has_coin, false);
-            else
-                await AddCoinAsync(coin, false);
+                if (has_coin != null && has_coin.donor_id != coin.Id)
+                {
+                    coin.Name = coin.Id;
+                    has_coin = HasCoin(coin);
+                }
 
-            await db.SaveChangesAsync();
+                if (has_coin != null)
+                    await UpdateCoinAsync(coin, has_coin, false);
+                else
+                    await AddCoinAsync(coin, false);
+
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                CLogger.instance.Write($"AddCoinsAsync err: {ex} {ex.Message}");
+            }
         }
 
-        await db.SaveChangesAsync();
+        db.SaveChanges();
 
         this.db.Dispose();
         this.db = old_db;
@@ -189,41 +229,50 @@ public class CCoinsM : CBaseDbM
     /// <summary>
     ///     Достает монеты из БД используя исходное заданное количество и номер страницы.
     /// </summary>
-    public IEnumerable<CCoinDataVM> GetCoins(int page, int count, string? filter = null, string? order = null, string order_type = "ask")
+    public IEnumerable<CCoinDataVM> GetCoins(int page, int count, string? filter = null, string? order = "c.id", string order_type = "asc")
     {
-        /*if (filter != "" && filter != null)
-            result = result.Where(c => c.name.Contains(filter) || c.name_full.Contains(filter));*/
-        
-        var query = db.Coins.AsQueryable()
-            .Include(c => c.ext)
-            .Include(c => c.meta)
-            .Where(c => c.enable.Value)
-            .Skip((page - 1) * count)
-            .Take(count)
-            .Select(c =>
-                new CCoinDataVM()
-                {
-                    data = c,
-                    commonModel = commonModel
-                }
-            )
+
+        string query = 
+            $"select c.* from coins as c" +
+                $" join coinsext as e on c.id = e.coins_id" +
+                $" where c.last_updated = e.last_updated" +
+                $" order by {order} {order_type}" +
+                $" offset {(page - 1) * count} rows" +
+                $" fetch next {count} rows ONLY"
         ;
 
-        if (order != null)
-            if (order_type == "ask")
-                return query.AsEnumerable().OrderBy(c =>
-                {
-                    Type type = typeof(CCoinDataM);
-                    return type.GetProperty(order)?.GetValue(c.data, null) ?? 0;
-                });
-            else
-                return query.AsEnumerable().OrderByDescending(c =>
-                {
-                    Type type = typeof(CCoinDataM);
-                    return type.GetProperty(order)?.GetValue(c.data, null) ?? 0;
-                });
+        var coins = db.Coins.FromSqlRaw(query)
+            .Select(c => new CCoinDataVM()
+            {
+                data = c,
+                commonModel = commonModel
+            })
+            .ToList();
+        ;
 
-        return query;
+        coins = JoinExtToCoins(coins);
+        
+        return coins;
+    }
+    public List<CCoinDataVM> JoinExtToCoins (List<CCoinDataVM> coins)
+    {
+        string query = $"select * from coinsext where ";
+
+        foreach (var coin in coins)
+        {
+            query += $"coins_id = {coin.data.id} or ";
+        }
+
+        query = query.TrimEnd(" or ".ToCharArray());
+
+        var ext = db.CoinsExt.FromSqlRaw(query).ToList();
+        
+        foreach (var coin in coins)
+        {
+            coin.data.l_ext = ext.Where(e => e.coins_id == coin.data.id).ToList();
+        }
+
+        return coins;
     }
     public IEnumerable<CCoinDataM> GetCoins() => db.Coins.Where(c => c.enable.Value);
     public CCoinDataM GetCoinByIndex(int index)

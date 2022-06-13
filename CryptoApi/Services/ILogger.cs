@@ -10,4 +10,5 @@ public enum ELogMode
 public interface ILogger
 {
     void Write(CCoinDataM coin, ELogMode mode);
+    void Write(string line);
 }
