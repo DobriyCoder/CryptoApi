@@ -61,6 +61,6 @@ public class CCoinsVM
         Int32.TryParse(page_str, out page);
         page = page == 0 ? 1 : page;
         page = page <= maxPage ? page : maxPage;
-        coins = blocks.GetCoinList(count, page, filter, order, order_type ?? "ask");
+        coins = blocks.GetCoinList(count, page, filter, order ?? "c.id", order_type ?? "asc");
     }
 }

@@ -4,5 +4,6 @@
     {
         Task CreateAsync();
         string? GetSubSitemap(int index);
+        string? GetMainSitemap();
     }
 }

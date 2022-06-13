@@ -29,8 +29,8 @@ builder.Services.AddTransient<CCoinPairVM>();
 builder.Services.AddTransient<CHomeVM>();
 
 builder.Services.AddTransient<CActualizerM>();
-builder.Services.AddSingleton<CApiManager>();
-builder.Services.AddSingleton<IRunnerM, CRunnerM>();
+builder.Services.AddTransient<CApiManager>();
+builder.Services.AddTransient<IRunnerM, CRunnerM>();
 builder.Services.AddTransient<ISitemap, CSitemap>();
 builder.Services.AddTransient<ILogger, CLogger>();
 
@@ -42,6 +42,15 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
+
+/*app.Run(async context =>
+{
+    string file_name = DateTime.Now.ToString("dd.MM.yyyy") + ".log";
+    string path = app.Environment.ContentRootPath + app.Configuration.GetSection("Logger").GetValue<string>("Path") + file_name;
+    if (!File.Exists(path)) File.Create(path);
+    //File.AppendAllText(path, "test");
+    await context.Response.WriteAsync(path);
+});*/
 
 app.UseRouting();
 

@@ -1,4 +1,5 @@
-﻿using CryptoApi.Models.DB;
+﻿using Atomex.Models;
+using CryptoApi.Models.DB;
 using CryptoApi.Services;
 
 namespace CryptoApi.ViewModels;
@@ -14,19 +15,110 @@ public class CBlocksHelperVM
     CCoinsM coinsModel;
     CCoinPairsM pairsModel;
     IHttpContextAccessor contextAccessor;
+    IWebHostEnvironment env;
 
-    
+    public static CBlocksHelperVM instance;
+
+
     /// <summary>
     ///     Конструктор. заполняет  необходимые поля при создании модели.
     /// </summary>
-    public CBlocksHelperVM (IHttpContextAccessor context, IConfiguration conf, CDbM db, CCoinsM coins_model, CCoinPairsM pairs_model)
+    public CBlocksHelperVM (IWebHostEnvironment env, IHttpContextAccessor context, IConfiguration conf, CDbM db, CCoinsM coins_model, CCoinPairsM pairs_model)
     {
         this.db = db;
         this.coinsModel = coins_model;
         this.pairsModel = pairs_model;
         this.conf = conf;
         contextAccessor = context;
+        this.env = env;
+
+        instance = this;
     }
+    public string GetUrl ()
+    {
+        return conf.GetValue<string>("BaseUrl");
+    }
+
+    
+    public List<string[]> GetDownloadBtnData()
+    {
+        return new List<string[]>()
+        {
+            new string[] { "chrome-icon.svg", "https://wallet.atomex.me/", "Web Wallet" },
+            new string[] { "windows-brand.svg", "https://github.com/atomex-me/atomex.client.desktop/releases/download/1.2.11/Atomex.Client-1.2.11.0-x64.msi", "Windows" },
+            new string[] { "ubuntu-brand.svg", "https://wallet.atomex.me/", "Ubuntu" },
+            new string[] { "apple-brand.svg", "https://github.com/atomex-me/atomex.client.desktop/releases/download/1.2.11/Atomex.1.2.11.dmg", "macOC" },
+            new string[] { "android-icon.svg", "https://play.google.com/store/apps/details?id=com.atomex.android", "Android" },
+        };
+    }
+
+    public CCoinPairDataVM GetExchangeWidgetData()
+    {
+        return GetPairList(1).FirstOrDefault();
+    }
+    public CMenuVM GetFooterMenu()
+    {
+        return new CMenuVM()
+        {
+            Title = "Atomex",
+
+            Links = new List<CLinkVM>()
+            {
+                new CLinkVM("Exchange"),
+                new CLinkVM("Wallet"),
+                new CLinkVM("Downloads"),
+                new CLinkVM("Docs"),
+            }
+        };
+    }
+
+    public CMenuVM GetFooterCoinsMenu()
+    {
+        var coins = GetCoinList(4);
+
+        var links = new List<CLinkVM>();
+
+        foreach (var coin in coins)
+        {
+            var data = new Dictionary<string, string>() { { "coin", coin.data.name } };
+            links.Add(new CLinkVM(coin.data.name_full, "Coins", "Coin", data));
+        }
+
+        return new CMenuVM()
+        {
+            Title = "Supported Coins",
+            Links = links,
+            MoreLink = new CLinkVM("View all coins", controller: "Coins")
+        };
+    }
+
+    public CMenuVM GetFooterPairsMenu()
+    {
+        var pairs = GetPairList(5);
+
+        var links = new List<CLinkVM>();
+
+        foreach (var pair in pairs)
+        {
+            var data = new Dictionary<string, string>() 
+            {
+                { "coin1", pair.data.name_1 },
+                { "coin2", pair.data.name_2 }
+            };
+
+            string title = $"{pair.data.name_1.ToUpper()} to {pair.data.name_2.ToUpper()}";
+
+            links.Add(new CLinkVM(title, "CoinPairs", "Pair", data));
+        }
+
+        return new CMenuVM()
+        {
+            Title = "Exchange Pairs",
+            Links = links,
+            MoreLink = new CLinkVM("View all coin pairs", controller: "CoinPairs")
+        };
+    }
+
     public string GetActiveClass(string controller, string action = "Index")
     {
         var context = contextAccessor.HttpContext;
@@ -44,7 +136,7 @@ public class CBlocksHelperVM
     /// <summary>
     ///     Возвращает список монет относительно кол-ва и номера страницы.
     /// </summary>
-    public IEnumerable<CCoinDataVM> GetCoinList(int count, int page = 1, string filter = "", string? order = null, string order_type = "ask")
+    public IEnumerable<CCoinDataVM> GetCoinList(int count, int page = 1, string filter = "", string? order = "c.id", string order_type = "asc")
     {
         return coinsModel.GetCoins(page, count, filter, order, order_type);
     }

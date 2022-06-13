@@ -26,15 +26,42 @@ static public class CTextTmpM
     {
         var result = new Dictionary<string, string> ();
         if (fields == null) return result;
-
         Type type = fields.GetType();
         var fields_info = type.GetProperties();
-
+        
         foreach (var field in fields_info)
         {
-            if (field.Name == "Item") continue;
+            if (
+                field.Name == "id" ||
+                /*field.Name == "donor" ||
+                field.Name == "donor_id" ||
+                field.Name == "name_full" ||
+                field.Name == "name" ||
+                field.Name == "slug" ||
+                field.Name == "image" ||
+                field.Name == "last_updated" ||
+                field.Name == "enable" ||
+                field.Name == "day_change" ||*/
+                /*field.Name == "day_percent_change" ||
+                field.Name == "week_percent_change" ||
+                field.Name == "month_percent_change" ||
+                field.Name == "usd_price" ||
+                field.Name == "market_cap" ||
+                field.Name == "low" ||
+                field.Name == "high" ||
+                field.Name == "circulating_supply" ||
+                field.Name == "max_supply" ||
+                field.Name == "cmc_rank" ||
+                field.Name == "volume_24h" ||
+                field.Name == "change_1h" ||*/
+                field.Name == "Item" ||
+                field.Name == "l_ext" || 
+                field.Name == "true_ext" || 
+                field.Name == "ext" || 
+                field.Name == "meta") 
+                    continue;
 
-            result.Add(field.Name, (string)field.GetValue(fields)?.ToString());
+            result.Add(field.Name, (string)(field.GetValue(fields)?.ToString() ?? ""));
         }
 
         return result;

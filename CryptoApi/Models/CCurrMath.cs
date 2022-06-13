@@ -101,7 +101,7 @@ namespace CryptoApi.Models
             if (last == null || diff == null) return null;
 
             if (last.Value == 0) return 0;
-
+            Console.WriteLine($"last: {last.Value}; dif: {diff.Value}");
             var result = Math.Round(100 / last.Value * diff.Value, 3);
             
             return result;

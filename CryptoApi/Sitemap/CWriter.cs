@@ -103,6 +103,25 @@
             }
         }
 
+        string GetMainFile(int count)
+        {
+            string path = root + mainFileName;
+            string content = "";
+
+            using (var sw = new StreamWriter(path, false, System.Text.Encoding.UTF8))
+            {
+                content += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+                content += "<sitemapindex xmlns=\"https://www.sitemaps.org/schemas/sitemap/0.9\">\n";
+
+                for (int i = 1; i < count + 1; i++)
+                    content += $"\t<sitemap>\r\t\t<loc>/sitemap-{i}.xml</loc>\r\t</sitemap>\n";
+
+                content += "</sitemapindex>";
+            }
+
+            return content;
+        }
+
         /// <summary>
         /// Новые файлы карт создаются со знаком "_" в начале имени.
         /// Это нужно для того, чтобы отличить старые файлы от новых.
@@ -147,6 +166,12 @@
             CreateMainFile(count_subfiles);
             RemoveOldFiles();
             RenameNewFiles();
+        }
+
+        public string GetMainSitemap()
+        {
+            int count_subfiles = (int)Math.Ceiling((double)count / countUrls);
+            return GetMainFile(count_subfiles);
         }
 
         public string? GetSubSitemap(int index)

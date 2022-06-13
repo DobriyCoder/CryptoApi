@@ -16,15 +16,15 @@ public class CCoinVM
     {
         get
         {
-            string title = coin.data["seo", "title"] != null ? coin.data["seo", "title"].value : commonModel["coin seo", "title"]?.value;
-            string text = coin.data["seo", "text"] != null ? coin.data["seo", "text"].value : commonModel["coin seo", "text"]?.value;
-
+            string? title = coin.data["seo", "title"]?.value ?? commonModel["coin seo", "title"]?.value ?? "";
+            string? text = coin.data["seo", "text"]?.value ?? commonModel["coin seo", "text"]?.value ?? "";
+            
             return new CTextBlockBuilder()
                 .SetTitle(title)
-                .SetTitleValues(coin.data["seo tpl", "title"]?.value)
+                .SetTitleValues(coin.data["seo tpl", "title"]?.value ?? "")
                 .SetTitleData(coin.data)
                 .SetText(text)
-                .SetTextValues(coin.data["seo tpl", "text"]?.value)
+                .SetTextValues(coin.data["seo tpl", "text"]?.value ?? "")
                 .SetTextData(null)
                 .Build();
         }
@@ -91,8 +91,8 @@ public class CCoinVM
             string coin_title = coin.data[coin_group, $"title{i + 1}"]?.value ?? "";
             string coin_text = coin.data[coin_group, $"text{i + 1}"]?.value ?? "";
 
-            string title = coin_title != "" ? coin_title : commonModel[group, $"title{i + 1}"].value;
-            string text = coin_text != "" ? coin_text : commonModel[group, $"text{i + 1}"].value;
+            string title = coin_title != "" ? coin_title : commonModel[group, $"title{i + 1}"]?.value ?? "";
+            string text = coin_text != "" ? coin_text : commonModel[group, $"text{i + 1}"]?.value ?? "";
 
             yield return new CTextBlockBuilder()
                 .SetTitle(title)

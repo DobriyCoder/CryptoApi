@@ -1,6 +1,7 @@
 ﻿using CoinGecko.Clients;
 using CoinGecko.Entities.Response.Coins;
 using CoinGecko.Interfaces;
+using CryptoApi.Services;
 
 namespace CryptoApi.Api.Gecko
 {
@@ -16,20 +17,40 @@ namespace CryptoApi.Api.Gecko
         IEnumerable<CoinMarkets> GetAllMarkets ()
         {
             int page = 1;
+            List<CoinMarkets> markets;
+            int count = 0;
+            int page_count = 0;
+            int delay = 5000;
+            CLogger.instance.Write("Start loading...");
 
             while(true)
             {
-                Console.WriteLine("before");
-                var markets = client.CoinsClient.GetCoinMarkets("usd", new string[] { }, "market_cap_desc", 250, page++, false, "", "").Result;
-                Console.WriteLine("after " + markets.Count + " " + (page - 1));
+                CLogger.instance.Write($"{++page_count}. {count}. before ");
 
+                try
+                {
+                    markets = client.CoinsClient.GetCoinMarkets("usd", new string[] { }, "market_cap_desc", 250, page++, false, "", "").Result;
+                    //Thread.Sleep(2000);
+                }
+                catch (Exception ex)
+                {
+                    CLogger.instance.Write($"err: ex.Message");
+                    Thread.Sleep(delay);
+                    delay += 1000;
+                    continue;
+                }
+
+                CLogger.instance.Write($"after: {markets.Count}; delay: {delay}");
                 if (markets.Count == 0) break;
-                
+
                 foreach (CoinMarkets market in markets)
                 {
+                    count++;
                     yield return market;
                 }
             }
+
+            Console.WriteLine($"All count: {count}");
         }
         public async Task<IApiCoinsData> GetCoinsAsync()
         {
