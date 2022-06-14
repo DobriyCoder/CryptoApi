@@ -30,6 +30,12 @@ public class CCoinPairDataM
     public decimal? day_high_2 => coin_2.high;// { get; set; }
     public decimal? day_low_1 => coin_1.low;// { get; set; }
     public decimal? day_low_2 => coin_2.low;// { get; set; }
+
+    public decimal? high_1 => coin_1.high;// { get; set; }
+    public decimal? high_2 => coin_2.high;// { get; set; }
+    public decimal? low_1 => coin_1.low;// { get; set; }
+    public decimal? low_2 => coin_2.low;// { get; set; }
+
     public decimal? market_cap => coin_1.market_cap;// { get; set; }
 
     public string max_supply_1 => coin_1.max_supply;
