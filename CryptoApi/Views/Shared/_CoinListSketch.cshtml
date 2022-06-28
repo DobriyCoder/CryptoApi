@@ -8,14 +8,16 @@
                     <div class="dc-coin-display__icons dc-coin-display__icons--height">
                         <span class="coin-icon coin-pair-display__icons-item coin-pair-display__icons-item--diagonal"
                         style="--size:32px;">
-                            @if(Model.data.image == "")
+                            @if(Model.data.image == null)
                             {
                                 <img src="/custom/img/letsexchange/table_line_coin_logo.svg" alt="@Model.data.name_full">
                             }
                             else
                             {
+                                
                                 <img src="@Model.data.image" alt="@Model.data.name_full">  
                             }
+                            image: @Model.data.image
                         </span> 
                     </div>
                     <div class="wrap">
