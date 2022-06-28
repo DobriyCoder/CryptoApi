@@ -25,7 +25,7 @@ public class CCoinPairDataM
     public decimal? week_percent_change_2 => coin_2.week_percent_change;
     public decimal? month_percent_change_2 => coin_2.month_percent_change;
 
-    public decimal? day_percent => 0;// { get; set; }
+    public decimal? day_percent_change => CCurrMath.GetPairDayChangePercentPrice(this);// { get; set; }
     public decimal? day_high_1 => coin_1.high;// { get; set; }
     public decimal? day_high_2 => coin_2.high;// { get; set; }
     public decimal? day_low_1 => coin_1.low;// { get; set; }

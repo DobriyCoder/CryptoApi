@@ -25,7 +25,7 @@ public class CCoinVM
                 .SetTitleData(coin.data)
                 .SetText(text)
                 .SetTextValues(coin.data["seo tpl", "text"]?.value ?? "")
-                .SetTextData(null)
+                .SetTextData(coin.data)
                 .Build();
         }
     }
