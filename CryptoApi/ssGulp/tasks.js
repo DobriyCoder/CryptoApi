@@ -11,7 +11,7 @@ var Gulp = require('gulp'),
     Uglify = require('gulp-uglify'), // js-минификатор
 
     // CSS
-    Sass = require('gulp-sass'),
+    Sass = require('gulp-sass')(require('sass')),
     Autoprefixer = require('gulp-autoprefixer'),
     Csso = require('gulp-csso'), // css-минификатор // TODO: не убирает комментарии
     

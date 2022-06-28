@@ -24,11 +24,12 @@
     .nav {
         flex-direction: row;
         width: 100%;
-        justify-content: space-between;
+        justify-content: end;
         display: flex;
 
         li {
-            padding: 0 3px;
+            padding: 0 5px;
+            margin-left: 25px;
 
             a:hover {
                 color: #0FD4E2;
