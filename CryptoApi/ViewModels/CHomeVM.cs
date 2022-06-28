@@ -40,6 +40,7 @@ public class CHomeVM
     ///     Используя метод GetTextBlock генерирует перечисление моделей текстовых блоков и возвращает их.
     /// </summary>
     public IEnumerable<CTextBlockVM> Faq => GetTextBlock("home faq");
+    public IEnumerable<string[]> Benefits => GetTextImgBlock("home benefits");
 
     /// <summary>
     ///     Используя метод GetTextBlock генерирует перечисление моделей текстовых блоков "Faq" и возвращает их.
@@ -55,6 +56,18 @@ public class CHomeVM
                 .SetTitle(title)
                 .SetText(text)
                 .Build();
+        }
+    }
+
+    public IEnumerable<string[]> GetTextImgBlock(string group)
+    {
+        for (var i = 0; i < commonModel[group].Count() / 3; i++)
+        {
+            string title = commonModel[group, $"title{i + 1}"]?.value ?? "";
+            string text = commonModel[group, $"text{i + 1}"]?.value ?? "";
+            string img = commonModel[group, $"img{i + 1}"]?.value ?? "";
+
+            yield return new string[] { title, text, img };
         }
     }
 

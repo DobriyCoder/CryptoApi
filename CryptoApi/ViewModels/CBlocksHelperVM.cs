@@ -7,7 +7,7 @@ namespace CryptoApi.ViewModels;
 /// <summary>
 ///     Вспомогательный класс (сервис) для удобства работы в файлах cshtml.
 /// </summary>
-public class CBlocksHelperVM
+public class CBlocksHelperVM 
 {
     CDbM db;
     WebApplication app;
@@ -39,16 +39,33 @@ public class CBlocksHelperVM
         return conf.GetValue<string>("BaseUrl");
     }
 
-    
+    public string ToCurr (decimal num)
+    {
+        return num.ToString("C", new System.Globalization.CultureInfo("en-US")).Replace(".00", "");
+    }
     public List<string[]> GetDownloadBtnData()
     {
         return new List<string[]>()
         {
-            new string[] { "chrome-icon.svg", "https://wallet.atomex.me/", "Web Wallet" },
-            new string[] { "windows-brand.svg", "https://github.com/atomex-me/atomex.client.desktop/releases/download/1.2.11/Atomex.Client-1.2.11.0-x64.msi", "Windows" },
-            new string[] { "ubuntu-brand.svg", "https://wallet.atomex.me/", "Ubuntu" },
-            new string[] { "apple-brand.svg", "https://github.com/atomex-me/atomex.client.desktop/releases/download/1.2.11/Atomex.1.2.11.dmg", "macOC" },
-            new string[] { "android-icon.svg", "https://play.google.com/store/apps/details?id=com.atomex.android", "Android" },
+            new string[] { "windows-brand.svg", "#", "Get Windows wallet ", " dcj-win" },
+            new string[] { "apple-brand.svg", "#", "Get macOS wallet", " dcj-mac" },
+            new string[] { "ubuntu-brand.svg", "#", "Get Ubuntu wallet", " dcj-linux" },
+            new string[] { "android-icon.svg", "https://play.google.com/store/apps/details?id=com.atomex.android", "Get Android wallet", "" },
+            new string[] { "apple-brand.svg", "https://apps.apple.com/us/app/atomex-wallet-dex/id1534717828", "Get iOS wallet", "" },
+            new string[] { "web-icon.svg", "https://wallet.atomex.me", "Launch Web Wallet", "" }
+        };
+    }
+
+    public List<string[]> GetDownloadBtnDataMobile()
+    {
+        return new List<string[]>()
+        {
+            new string[] { "windows-brand.svg", "https://github.com/atomex-me/atomex.client.desktop/releases/download/1.2.11/Atomex.Client-1.2.11.0-x64.msi", "Get Windows wallet " },
+            new string[] { "apple-brand.svg", "https://github.com/atomex-me/atomex.client.desktop/releases/download/1.2.11/Atomex.1.2.11.dmg", "Get macOS wallet" },
+            new string[] { "ubuntu-brand.svg", "https://wallet.atomex.me/", "Get Ubuntu wallet" },
+            new string[] { "android-icon.svg", "https://play.google.com/store/apps/details?id=com.atomex.android", "Get Android wallet" },
+            new string[] { "apple-brand.svg", "https://apps.apple.com/us/app/atomex-wallet-dex/id1534717828", "Get iOS wallet" },
+            new string[] { "web-icon.svg", "https://wallet.atomex.me/", "Launch Web Wallet" }
         };
     }
 
@@ -106,7 +123,7 @@ public class CBlocksHelperVM
                 { "coin2", pair.data.name_2 }
             };
 
-            string title = $"{pair.data.name_1.ToUpper()} to {pair.data.name_2.ToUpper()}";
+            string title = $"{pair.data.name_1.ToLower()} to {pair.data.name_2.ToLower()}";
 
             links.Add(new CLinkVM(title, "CoinPairs", "Pair", data));
         }

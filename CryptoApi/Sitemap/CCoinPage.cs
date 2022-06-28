@@ -4,7 +4,7 @@ namespace CryptoApi.Sitemap
 {
     public class CCoinPage : IPageType
     {
-        public uint count => model.Count();
+        public uint count => (uint)model.TrueCount();
         public CCoinsM model;
 
         public CCoinPage(CCoinsM model)

@@ -128,7 +128,7 @@ public class CCoinsM : CBaseDbM
         new_coin.donor = coin.Donor;
         new_coin.donor_id = coin.Id;
         new_coin.name_full = coin.FullName;
-        new_coin.name = coin.Name;
+        new_coin.name = coin.Name.ToUpper();
         new_coin.slug = coin.Name;
         new_coin.image = new_coin.image == null || new_coin.image == "" ? SaveCoinIcon(coin.Image, coin.Name) : new_coin.image;
         new_coin.last_updated = now;
@@ -235,12 +235,12 @@ public class CCoinsM : CBaseDbM
         string query = 
             $"select c.* from coins as c" +
                 $" join coinsext as e on c.id = e.coins_id" +
-                $" where c.last_updated = e.last_updated" +
-                $" order by {order} {order_type}" +
+                $" where c.last_updated = e.last_updated and c.[enable] = 1" +
+                //$" order by {order} {order_type}" +
+                $" order by e.total_volume desc" +
                 $" offset {(page - 1) * count} rows" +
                 $" fetch next {count} rows ONLY"
         ;
-
         var coins = db.Coins.FromSqlRaw(query)
             .Select(c => new CCoinDataVM()
             {
@@ -277,7 +277,28 @@ public class CCoinsM : CBaseDbM
     public IEnumerable<CCoinDataM> GetCoins() => db.Coins.Where(c => c.enable.Value);
     public CCoinDataM GetCoinByIndex(int index)
     {
-        return db.Coins.Skip(index).Include(c => c.ext).Where(c => c.enable.Value).First();
+        string query =
+            $"select c.* from coins as c" +
+                $" where c.[enable] = 1" +
+                $" order by c.id" +
+                $" offset {index} rows" +
+                $" fetch next 1 rows ONLY"
+        ;
+
+        var coins = db.Coins.FromSqlRaw(query)
+            .Select(c => new CCoinDataVM()
+            {
+                data = c,
+                commonModel = commonModel
+            })
+            .ToList();
+        ;
+
+        coins = JoinExtToCoins(coins);
+
+        return coins.First().data;
+
+        //return db.Coins.Skip(index).Include(c => c.ext).Where(c => c.enable.Value).First();
     }
     public IEnumerable<CCoinDataM> GetTrueCoins(string? filter = null)
     {
@@ -321,7 +342,7 @@ public class CCoinsM : CBaseDbM
     /// </summary>
     public int GetMaxPage (int count, string? filter = null)
     {
-        int max_count = (int)Math.Ceiling(Count(filter) / count * 1f);
+        int max_count = (int)Math.Ceiling(TrueCount(filter) / count * 1f);
         return max_count;
     }
 
